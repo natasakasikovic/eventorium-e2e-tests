@@ -1,6 +1,6 @@
 package com.ts.eventorium.util;
 
-import com.ts.eventorium.pages.home.HomePage;
+import com.ts.eventorium.home.HomePage;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -32,7 +32,7 @@ public class TestBase {
     @BeforeMethod
     public void loadApplication() {
         driver.get(EVENTORIUM_URL);
-        BasePage.setDriver(driver);
+        PageBase.setDriver(driver);
         homePage = PageFactory.initElements(driver, HomePage.class);
     }
 
@@ -54,6 +54,7 @@ public class TestBase {
             }
         }
     }
+
     @AfterSuite
     public void quitDriver() {
         driver.quit();

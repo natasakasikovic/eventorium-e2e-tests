@@ -1,12 +1,17 @@
-package com.ts.eventorium.pages.auth;
+package com.ts.eventorium.auth;
 
-import com.ts.eventorium.pages.home.OrganizerHomePage;
-import com.ts.eventorium.util.BasePage;
+import com.ts.eventorium.home.OrganizerHomePage;
+import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class LoginPage extends BasePage {
+public class LoginPage extends PageBase {
+
+    private static final String ORGANIZER_EMAIL = "organizer@gmail.com";
+    private static final String ADMIN_EMAIL = "admin@gmail.com";
+    private static final String PROVIDER_EMAIL = "provider@gmail.com";
+    private static final String PASSWORD = "pera";
 
     @FindBy(xpath = "//input[@name='email']")
     private WebElement emailInput;
@@ -16,11 +21,6 @@ public class LoginPage extends BasePage {
 
     @FindBy(xpath = "//button/span[text()='Sign In']/..")
     private WebElement signInButton;
-
-    private static final String ORGANIZER_EMAIL = "organizer@gmail.com";
-    private static final String ADMIN_EMAIL = "admin@gmail.com";
-    private static final String PROVIDER_EMAIL = "provider@gmail.com";
-    private static final String PASSWORD = "pera";
 
     public void setEmail(String email) {
         emailInput.sendKeys(email);

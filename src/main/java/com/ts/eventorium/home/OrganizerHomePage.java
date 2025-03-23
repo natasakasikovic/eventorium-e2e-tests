@@ -1,6 +1,6 @@
-package com.ts.eventorium.pages.home;
+package com.ts.eventorium.home;
 
-import com.ts.eventorium.pages.event.CreateEventPage;
+import com.ts.eventorium.event.CreateEventPage;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
