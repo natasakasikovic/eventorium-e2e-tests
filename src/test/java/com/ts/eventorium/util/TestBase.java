@@ -8,13 +8,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 
 public class TestBase {
 
@@ -29,7 +27,7 @@ public class TestBase {
         driver.manage().window().maximize();
     }
 
-    @BeforeMethod
+    @BeforeClass
     public void loadApplication() {
         driver.get(EVENTORIUM_URL);
         PageBase.setDriver(driver);
@@ -41,17 +39,15 @@ public class TestBase {
         if (ITestResult.FAILURE == testResult.getStatus()) {
             TakesScreenshot screenshot = (TakesScreenshot) driver;
             File source = screenshot.getScreenshotAs(OutputType.FILE);
-            File destination = new File(System.getProperty("user.dir") +
-                    "/resources/screenshots/(" +
-                    java.time.LocalDate.now() + ") " +
-                    testResult.getName() + ".png");
-
-            if (destination.exists() || destination.getParentFile().mkdirs()) {
-                FileHandler.copy(source, destination);
-                System.out.println("Screenshot Located At " + destination);
-            } else {
-                throw new IOException("Could not create files");
+            File screenshotsDir = new File(System.getProperty("user.dir") + "/resources/screenshots");
+            if (!screenshotsDir.exists() && !screenshotsDir.mkdirs()) {
+                throw new IOException("Could not screenshot file");
             }
+
+            File destination =
+                    new File(screenshotsDir,"(" + LocalDate.now() + ") " + testResult.getName() + ".png");
+            FileHandler.copy(source, destination);
+            System.out.println("Screenshot Located At " + destination);
         }
     }
 

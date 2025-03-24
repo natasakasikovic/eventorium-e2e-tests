@@ -1,12 +1,11 @@
 package com.ts.eventorium.util;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public abstract class PageBase {
 
@@ -32,6 +31,10 @@ public abstract class PageBase {
 
     protected void click(By locator) {
         findElement(locator).click();
+    }
+
+    protected void waitFor(long time, TimeUnit unit) {
+        driver.manage().timeouts().implicitlyWait(time, unit);
     }
 
 }
