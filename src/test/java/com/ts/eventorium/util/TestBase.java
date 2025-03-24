@@ -12,7 +12,7 @@ import org.testng.annotations.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.Instant;
 
 public class TestBase {
 
@@ -45,7 +45,7 @@ public class TestBase {
             }
 
             File destination =
-                    new File(screenshotsDir,"(" + LocalDate.now() + ") " + testResult.getName() + ".png");
+                    new File(screenshotsDir,"(" + Instant.now().toEpochMilli() + ") " + testResult.getName() + ".png");
             FileHandler.copy(source, destination);
             System.out.println("Screenshot Located At " + destination);
         }
@@ -53,6 +53,6 @@ public class TestBase {
 
     @AfterSuite
     public void quitDriver() {
-        driver.quit();
+//        driver.quit();
     }
 }

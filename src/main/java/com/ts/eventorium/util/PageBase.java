@@ -1,8 +1,6 @@
 package com.ts.eventorium.util;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,8 +27,27 @@ public abstract class PageBase {
         element.sendKeys(value);
     }
 
+    protected void scrollTo(By locator) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", findElement(locator));
+    }
+
+    protected void scrollTo(WebElement element) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+    }
+
     protected void click(By locator) {
         findElement(locator).click();
+    }
+
+    protected void clickJs(By locator) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", findElement(locator));
+    }
+
+    protected void clickRadioButton(By locator) {
+        WebElement button = findElement(locator);
+        if(!button.isSelected()) {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", button);
+        }
     }
 
     protected void waitFor(long time, TimeUnit unit) {

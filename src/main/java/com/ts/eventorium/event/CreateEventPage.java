@@ -38,10 +38,6 @@ public class CreateEventPage extends PageBase {
     @FindBy(id = "submit")
     private WebElement budgetPlanningButton;
 
-    private final By eventTypesPanel = By.id("eventTypeSelect-panel");
-    private final By privacyPanel = By.id("mat-select-2-panel");
-    private final By cityPanel = By.id("mat-select-4-panel");
-
     private final By options = By.xpath("//mat-option/span");
 
     public BudgetPlanningPage clickBudgetPlanningButton() {
@@ -70,25 +66,30 @@ public class CreateEventPage extends PageBase {
     }
 
     public void selectEventType(String eventType) {
-        selectOption(eventTypeSelect, eventTypesPanel, eventType);
+        selectOption(eventTypeSelect, eventType);
     }
 
     public void selectPrivacy(String privacy) {
-        selectOption(privacySelect, privacyPanel, privacy);
+        selectOption(privacySelect, privacy);
     }
 
     public void selectCity(String city) {
-        selectOption(citySelect, cityPanel, city);
+        selectOption(citySelect, city);
     }
 
-    private void selectOption(WebElement select, By panel, String option) {
+    private void selectOption(WebElement select, String option) {
         select.click();
-        (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.visibilityOf(findElement(panel)));
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.visibilityOf(findElement(options)));
+
 
         findElements(options).stream()
                 .filter(element -> element.getText().equals(option))
                 .findFirst()
-                .ifPresent(WebElement::click);
+                .ifPresent(element -> {
+                    wait.until(ExpectedConditions.visibilityOf(element));
+                    element.click();
+                });
+
     }
 }
