@@ -74,4 +74,14 @@ public class BudgetTest extends TestBase {
 
         assertEquals(0, services.size());
     }
+
+    @Test(dependsOnMethods = "testSearchProducts")
+    public void testPurchaseProductFromBudget() {
+        planningPage.selectCategory("Decoration");
+        BudgetPlanningPage page = planningPage.clickProductSeeMoreButton("Party Hats").clickPurchaseButton();
+
+        assertNotNull(page);
+        assertTrue(planningPage.findToaster().isPresent());
+    }
+
 }

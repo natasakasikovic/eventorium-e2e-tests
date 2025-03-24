@@ -1,9 +1,11 @@
 package com.ts.eventorium.event;
 
+import com.ts.eventorium.solution.ProductDetailsPage;
 import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -45,6 +47,10 @@ public class BudgetPlanningPage extends PageBase {
     private final By searchButton = By.xpath("//button[span[text()='Search']]");
     private final By productCards = By.xpath("//div[@class='cards']/app-product-card");
     private final By serviceCards = By.xpath("//div[@class='cards']/app-service-card");
+    private final By toaster = By.cssSelector(".toast-top-right");
+
+    private final String productSeeMorePattern = "//app-product-card[.//mat-card-title[text()='%s']]//button[.//span[text()='See more']]";
+    private final String cardNamePattern = "//mat-card-title[text()='%s']";
 
     public void selectCategory(String name) {
         findTabCategory(name).ifPresent(element -> {
@@ -124,9 +130,25 @@ public class BudgetPlanningPage extends PageBase {
     }
 
     public Optional<WebElement> findByCardName(String name) {
-        String xpath = String.format("//mat-card-title[text()='%s']", name);
+        String xpath = String.format(cardNamePattern, name);
         try {
             return Optional.of(findElement(By.xpath(xpath)));
+        } catch (NoSuchElementException e) {
+            return Optional.empty();
+        }
+    }
+
+    public ProductDetailsPage clickProductSeeMoreButton(String productName) {
+        String xpath = String.format(productSeeMorePattern, productName);
+        (new WebDriverWait(driver, 5))
+                .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)))
+                .click();
+        return PageFactory.initElements(driver, ProductDetailsPage.class);
+    }
+
+    public Optional<WebElement> findToaster() {
+        try {
+            return Optional.of(findElement(toaster));
         } catch (NoSuchElementException e) {
             return Optional.empty();
         }
