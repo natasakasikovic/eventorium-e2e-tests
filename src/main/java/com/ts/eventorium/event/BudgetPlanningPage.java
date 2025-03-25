@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+
 public class BudgetPlanningPage extends OrganizerPage {
 
     @FindBy(id = "submit")
@@ -55,24 +57,21 @@ public class BudgetPlanningPage extends OrganizerPage {
         findTabCategory(name).ifPresent(element -> {
             element.click();
             (new WebDriverWait(driver, 5))
-                    .until(ExpectedConditions.elementToBeClickable(By.id(name + "-plannedInput")));
+                    .until(elementToBeClickable(By.id(name + "-plannedInput")));
         });
     }
 
     public void removeCategory(String name) {
         findTabCategory(name).ifPresent(element -> {
             element.click();
-            (new WebDriverWait(driver, 5))
-                    .until(ExpectedConditions.elementToBeClickable(deleteButton))
-                    .click();
+            waitUntil(elementToBeClickable(deleteButton)).click();
         });
     }
 
     public void addCategory(String name) {
         if(findTabCategory(name).isEmpty()) {
             categorySelect.click();
-            (new WebDriverWait(driver, 5))
-                    .until(ExpectedConditions.visibilityOfElementLocated(categoryPanel));
+            waitUntil(ExpectedConditions.visibilityOfElementLocated(categoryPanel));
 
             findNewCategory(name).ifPresent(element -> {
                 scrollTo(element);
@@ -105,22 +104,18 @@ public class BudgetPlanningPage extends OrganizerPage {
     }
 
     public void clickPlannerTab() {
-        (new WebDriverWait(driver, 5))
-                .until(ExpectedConditions.elementToBeClickable(plannerTab))
-                .click();
+        waitUntil(elementToBeClickable(plannerTab)).click();
     }
 
     public void clickSearchButton() {
-        (new WebDriverWait(driver, 5))
-                .until(ExpectedConditions.elementToBeClickable(searchButton));
+        waitUntil(elementToBeClickable(searchButton));
         clickJs(searchButton);
     }
 
     public ProductDetailsPage clickProductSeeMoreButton(String productName) {
         String xpath = String.format(PRODUCT_SEE_MORE_PATTERN, productName);
-        (new WebDriverWait(driver, 5))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)))
-                .click();
+        waitUntil(elementToBeClickable(By.xpath(xpath))).click();
+
         return PageFactory.initElements(driver, ProductDetailsPage.class);
     }
 
@@ -129,13 +124,12 @@ public class BudgetPlanningPage extends OrganizerPage {
         By plannedAmountInput = By.id(categoryName + "-plannedInput");
         WebElement inputElement = wait.until(ExpectedConditions.visibilityOfElementLocated(plannedAmountInput));
 
-        wait.until(ExpectedConditions.elementToBeClickable(inputElement));
+        wait.until(elementToBeClickable(inputElement));
         set(plannedAmountInput, plannedAmount);
     }
 
     public Optional<WebElement> findTabCategory(String name) {
-        (new WebDriverWait(driver, 5))
-                .until(ExpectedConditions.visibilityOf(budgetItems));
+        waitUntil(ExpectedConditions.visibilityOf(budgetItems));
 
         return findElements(categoryTabs).stream()
                 .filter(category -> category.getText().equals(name))

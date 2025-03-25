@@ -12,6 +12,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Optional;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+
 public class HomePage extends PageBase {
 
     @FindBy(xpath = "//button/span[text()='Login']/..")
@@ -63,8 +65,7 @@ public class HomePage extends PageBase {
 
     public WebElement findToasterWithMessage(String message) {
         String xpath = String.format(TOASTER_MESSAGE_PATTERN, message);
-        return (new WebDriverWait(driver, 5))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+        return waitUntil(visibilityOfElementLocated(By.xpath(xpath)));
     }
 
     public Optional<WebElement> findToaster() {
@@ -73,8 +74,7 @@ public class HomePage extends PageBase {
 
     public Optional<WebElement> findDrawerOption(String option) {
         drawerButton.click();
-        (new WebDriverWait(driver, 5))
-                .until(ExpectedConditions.visibilityOfElementLocated(drawer));
+        waitUntil(visibilityOfElementLocated(drawer));
 
         return findElement(By.xpath(String.format(DRAWER_OPTION_PATTERN, option)));
     }

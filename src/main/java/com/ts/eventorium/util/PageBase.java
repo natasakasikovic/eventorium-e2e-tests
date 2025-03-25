@@ -1,6 +1,9 @@
 package com.ts.eventorium.util;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -62,6 +65,14 @@ public abstract class PageBase {
 
     protected void waitFor(long time, TimeUnit unit) {
         driver.manage().timeouts().implicitlyWait(time, unit);
+    }
+
+    protected WebElement waitUntil(ExpectedCondition<WebElement> condition) {
+        return waitUntil(condition, 5);
+    }
+
+    protected WebElement waitUntil(ExpectedCondition<WebElement> condition, long timeOutInSeconds) {
+        return (new WebDriverWait(driver, timeOutInSeconds)).until(condition);
     }
 
 }

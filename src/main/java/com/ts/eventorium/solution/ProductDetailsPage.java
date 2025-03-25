@@ -12,6 +12,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Optional;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+
 public class ProductDetailsPage extends HomePage {
 
     @FindBy(xpath = "//button[.//span[text()='Purchase']]")
@@ -24,9 +27,7 @@ public class ProductDetailsPage extends HomePage {
 
     public void purchaseProduct(String eventName, double plannedAmount) {
         clickPurchaseButton();
-        (new WebDriverWait(driver, 5))
-                .until(ExpectedConditions.visibilityOfElementLocated(eventSelect))
-                .click();
+        waitUntil(visibilityOfElementLocated(eventSelect)).click();
 
         findOption(eventName).ifPresent(element -> {
             scrollTo(element);
@@ -42,9 +43,7 @@ public class ProductDetailsPage extends HomePage {
     }
 
     private void clickPurchaseButton() {
-        (new WebDriverWait(driver, 5))
-                .until(ExpectedConditions.elementToBeClickable(purchaseButton))
-                .click();
+        waitUntil(elementToBeClickable(purchaseButton), 5).click();
     }
 
     private Optional<WebElement> findOption(String option) {

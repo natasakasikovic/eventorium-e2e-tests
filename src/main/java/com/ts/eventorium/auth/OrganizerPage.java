@@ -14,8 +14,7 @@ public class OrganizerPage extends HomePage {
     private WebElement createEventButton;
 
     public CreateEventPage clickCreateEventButton() {
-        (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.elementToBeClickable(createEventButton)).click();
+        waitUntil(ExpectedConditions.elementToBeClickable(createEventButton)).click();
 
         return PageFactory.initElements(driver, CreateEventPage.class);
     }

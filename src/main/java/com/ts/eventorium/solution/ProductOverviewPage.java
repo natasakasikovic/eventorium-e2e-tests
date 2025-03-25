@@ -11,6 +11,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 import java.util.Optional;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+
 public class ProductOverviewPage extends HomePage {
 
     @FindBy(xpath = "//app-search-bar//input")
@@ -25,9 +27,9 @@ public class ProductOverviewPage extends HomePage {
     private static final String SEE_MORE_BUTTON_PATTERN = "//app-product-card[.//mat-card-title[text()='%s']]//button";
 
     public ProductDetailsPage clickSeeMoreButton(String productName) {
-        WebElement button = (new WebDriverWait(driver, 5))
-                .until(ExpectedConditions
-                        .elementToBeClickable(By.xpath(String.format(SEE_MORE_BUTTON_PATTERN, productName))));
+        By xpath = By.xpath(String.format(SEE_MORE_BUTTON_PATTERN, productName));
+        WebElement button = waitUntil(elementToBeClickable(xpath));
+
         scrollTo(button);
         button.click();
         return PageFactory.initElements(driver, ProductDetailsPage.class);
