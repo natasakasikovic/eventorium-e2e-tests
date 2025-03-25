@@ -20,4 +20,9 @@ public class OrganizerPage extends HomePage {
         return PageFactory.initElements(driver, CreateEventPage.class);
     }
 
+    public OrganizerPage clickHome() {
+        findDrawerOption("Home").ifPresent(WebElement::click);
+        return PageFactory.initElements(driver, OrganizerPage.class);
+    }
+
 }

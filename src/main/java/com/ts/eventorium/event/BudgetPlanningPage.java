@@ -1,5 +1,6 @@
 package com.ts.eventorium.event;
 
+import com.ts.eventorium.auth.OrganizerPage;
 import com.ts.eventorium.solution.ProductDetailsPage;
 import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.By;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class BudgetPlanningPage extends PageBase {
+public class BudgetPlanningPage extends OrganizerPage {
 
     @FindBy(id = "submit")
     private WebElement nextButton;
@@ -46,7 +47,6 @@ public class BudgetPlanningPage extends PageBase {
     private final By searchButton = By.xpath("//button[span[text()='Search']]");
     private final By productCards = By.xpath("//div[@class='cards']/app-product-card");
     private final By serviceCards = By.xpath("//div[@class='cards']/app-service-card");
-    private final By toaster = By.cssSelector(".toast-top-right");
 
     private static final String PRODUCT_SEE_MORE_PATTERN = "//app-product-card[.//mat-card-title[text()='%s']]//button[.//span[text()='See more']]";
     private static final String CARD_NAME_PATTERN = "//mat-card-title[text()='%s']";
@@ -160,9 +160,5 @@ public class BudgetPlanningPage extends PageBase {
 
     public Optional<WebElement> findByCardName(String name) {
         return findElement(By.xpath(String.format(CARD_NAME_PATTERN, name)));
-    }
-
-    public Optional<WebElement> findToaster() {
-        return findElement(toaster);
     }
 }

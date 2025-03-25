@@ -79,16 +79,15 @@ public class CreateEventPage extends PageBase {
 
     private void selectOption(WebElement select, String option) {
         select.click();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver, 5);
         wait.until(ExpectedConditions.visibilityOfElementLocated(options));
 
         findElements(options).stream()
                 .filter(element -> element.getText().equals(option))
                 .findFirst()
                 .ifPresent(element -> {
-                    wait.until(ExpectedConditions.visibilityOf(element));
+                    wait.until(ExpectedConditions.elementToBeClickable(element));
                     element.click();
                 });
-
     }
 }
