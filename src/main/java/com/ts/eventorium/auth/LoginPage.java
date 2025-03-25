@@ -1,6 +1,5 @@
 package com.ts.eventorium.auth;
 
-import com.ts.eventorium.home.OrganizerHomePage;
 import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -39,11 +38,11 @@ public class LoginPage extends PageBase {
         signInButton.click();
     }
 
-    public OrganizerHomePage signInAsOrganizer() {
+    public OrganizerPage signInAsOrganizer() {
         setEmail(ORGANIZER_EMAIL);
         setPassword(PASSWORD);
         clickSignInButton();
-        return PageFactory.initElements(driver, OrganizerHomePage.class);
+        return PageFactory.initElements(driver, OrganizerPage.class);
     }
 
     public void signInAsProvider() {

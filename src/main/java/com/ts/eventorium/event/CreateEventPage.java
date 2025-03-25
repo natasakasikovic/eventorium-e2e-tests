@@ -80,8 +80,7 @@ public class CreateEventPage extends PageBase {
     private void selectOption(WebElement select, String option) {
         select.click();
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(ExpectedConditions.visibilityOf(findElement(options)));
-
+        wait.until(ExpectedConditions.visibilityOfElementLocated(options));
 
         findElements(options).stream()
                 .filter(element -> element.getText().equals(option))

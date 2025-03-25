@@ -3,18 +3,24 @@ package com.ts.eventorium.util;
 import org.openqa.selenium.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public abstract class PageBase {
 
-    public static WebDriver driver;
+    protected static WebDriver driver;
 
     public static void setDriver(WebDriver driver) {
         PageBase.driver = driver;
     }
 
-    protected WebElement findElement(By locator) {
-        return driver.findElement(locator);
+    protected Optional<WebElement> findElement(By locator) {
+        try {
+            return Optional.of(driver.findElement(locator));
+        } catch (NoSuchElementException e) {
+            return Optional.empty();
+        }
     }
 
     protected List<WebElement> findElements(By locator) {
@@ -22,13 +28,15 @@ public abstract class PageBase {
     }
 
     protected void set(By locator, String value) {
-        WebElement element = findElement(locator);
-        element.clear();
-        element.sendKeys(value);
+        findElement(locator).ifPresent(element -> {
+            element.clear();
+            element.sendKeys(value);
+        });
     }
 
     protected void scrollTo(By locator) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", findElement(locator));
+        findElement(locator).ifPresent(element ->
+                ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element));
     }
 
     protected void scrollTo(WebElement element) {
@@ -36,18 +44,20 @@ public abstract class PageBase {
     }
 
     protected void click(By locator) {
-        findElement(locator).click();
+        findElement(locator).ifPresent(WebElement::click);
     }
 
     protected void clickJs(By locator) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", findElement(locator));
+        findElement(locator).ifPresent(element ->
+                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element));
     }
 
     protected void clickRadioButton(By locator) {
-        WebElement button = findElement(locator);
-        if(!button.isSelected()) {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", button);
-        }
+        findElement(locator).ifPresent(button -> {
+            if (!button.isSelected()) {
+                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", button);
+            }
+        });
     }
 
     protected void waitFor(long time, TimeUnit unit) {

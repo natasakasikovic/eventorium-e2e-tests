@@ -10,7 +10,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -49,8 +48,8 @@ public class BudgetPlanningPage extends PageBase {
     private final By serviceCards = By.xpath("//div[@class='cards']/app-service-card");
     private final By toaster = By.cssSelector(".toast-top-right");
 
-    private final String productSeeMorePattern = "//app-product-card[.//mat-card-title[text()='%s']]//button[.//span[text()='See more']]";
-    private final String cardNamePattern = "//mat-card-title[text()='%s']";
+    private static final String PRODUCT_SEE_MORE_PATTERN = "//app-product-card[.//mat-card-title[text()='%s']]//button[.//span[text()='See more']]";
+    private static final String CARD_NAME_PATTERN = "//mat-card-title[text()='%s']";
 
     public void selectCategory(String name) {
         findTabCategory(name).ifPresent(element -> {
@@ -58,27 +57,6 @@ public class BudgetPlanningPage extends PageBase {
             (new WebDriverWait(driver, 5))
                     .until(ExpectedConditions.elementToBeClickable(By.id(name + "-plannedInput")));
         });
-    }
-
-    public void clickPlannerTab() {
-        (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.elementToBeClickable(plannerTab))
-                .click();
-    }
-
-    public void clickSearchButton() {
-        (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.elementToBeClickable(searchButton));
-        clickJs(searchButton);
-    }
-
-    public void setPlannedAmount(String categoryName, String plannedAmount)  {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        By plannedAmountInput = By.id(categoryName + "-plannedInput");
-        WebElement inputElement = wait.until(ExpectedConditions.visibilityOfElementLocated(plannedAmountInput));
-
-        wait.until(ExpectedConditions.elementToBeClickable(inputElement));
-        set(plannedAmountInput, plannedAmount);
     }
 
     public void removeCategory(String name) {
@@ -94,7 +72,7 @@ public class BudgetPlanningPage extends PageBase {
         if(findTabCategory(name).isEmpty()) {
             categorySelect.click();
             (new WebDriverWait(driver, 5))
-                    .until(ExpectedConditions.visibilityOf(findElement(categoryPanel)));
+                    .until(ExpectedConditions.visibilityOfElementLocated(categoryPanel));
 
             findNewCategory(name).ifPresent(element -> {
                 scrollTo(element);
@@ -102,6 +80,57 @@ public class BudgetPlanningPage extends PageBase {
                 addCategoryButton.click();
             });
         }
+    }
+
+    public List<WebElement> searchServices(String categoryName, double plannedAmount) {
+        addCategory(categoryName);
+        selectCategory(categoryName);
+
+        clickRadioButton(serviceRadio);
+        setPlannedAmount(categoryName, String.valueOf(plannedAmount));
+        clickSearchButton();
+
+        return findServices();
+    }
+
+    public List<WebElement> searchProducts(String categoryName, double plannedAmount) {
+        addCategory(categoryName);
+        selectCategory(categoryName);
+
+        clickRadioButton(productRadio);
+        setPlannedAmount(categoryName, String.valueOf(plannedAmount));
+        clickSearchButton();
+
+        return findProducts();
+    }
+
+    public void clickPlannerTab() {
+        (new WebDriverWait(driver, 5))
+                .until(ExpectedConditions.elementToBeClickable(plannerTab))
+                .click();
+    }
+
+    public void clickSearchButton() {
+        (new WebDriverWait(driver, 5))
+                .until(ExpectedConditions.elementToBeClickable(searchButton));
+        clickJs(searchButton);
+    }
+
+    public ProductDetailsPage clickProductSeeMoreButton(String productName) {
+        String xpath = String.format(PRODUCT_SEE_MORE_PATTERN, productName);
+        (new WebDriverWait(driver, 5))
+                .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)))
+                .click();
+        return PageFactory.initElements(driver, ProductDetailsPage.class);
+    }
+
+    public void setPlannedAmount(String categoryName, String plannedAmount)  {
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        By plannedAmountInput = By.id(categoryName + "-plannedInput");
+        WebElement inputElement = wait.until(ExpectedConditions.visibilityOfElementLocated(plannedAmountInput));
+
+        wait.until(ExpectedConditions.elementToBeClickable(inputElement));
+        set(plannedAmountInput, plannedAmount);
     }
 
     public Optional<WebElement> findTabCategory(String name) {
@@ -130,49 +159,10 @@ public class BudgetPlanningPage extends PageBase {
     }
 
     public Optional<WebElement> findByCardName(String name) {
-        String xpath = String.format(cardNamePattern, name);
-        try {
-            return Optional.of(findElement(By.xpath(xpath)));
-        } catch (NoSuchElementException e) {
-            return Optional.empty();
-        }
-    }
-
-    public ProductDetailsPage clickProductSeeMoreButton(String productName) {
-        String xpath = String.format(productSeeMorePattern, productName);
-        (new WebDriverWait(driver, 5))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)))
-                .click();
-        return PageFactory.initElements(driver, ProductDetailsPage.class);
+        return findElement(By.xpath(String.format(CARD_NAME_PATTERN, name)));
     }
 
     public Optional<WebElement> findToaster() {
-        try {
-            return Optional.of(findElement(toaster));
-        } catch (NoSuchElementException e) {
-            return Optional.empty();
-        }
-    }
-
-    public List<WebElement> searchServices(String categoryName, double plannedAmount) {
-        addCategory(categoryName);
-        selectCategory(categoryName);
-
-        clickRadioButton(serviceRadio);
-        setPlannedAmount(categoryName, String.valueOf(plannedAmount));
-        clickSearchButton();
-
-        return findServices();
-    }
-
-    public List<WebElement> searchProducts(String categoryName, double plannedAmount) {
-        addCategory(categoryName);
-        selectCategory(categoryName);
-
-        clickRadioButton(productRadio);
-        setPlannedAmount(categoryName, String.valueOf(plannedAmount));
-        clickSearchButton();
-
-        return findProducts();
+        return findElement(toaster);
     }
 }
