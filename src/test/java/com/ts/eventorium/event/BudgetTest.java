@@ -2,6 +2,7 @@ package com.ts.eventorium.event;
 
 import com.ts.eventorium.solution.ProductDetailsPage;
 import com.ts.eventorium.solution.ProductOverviewPage;
+import com.ts.eventorium.providers.BudgetDataProvider;
 import com.ts.eventorium.util.TestBase;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
@@ -48,73 +49,45 @@ public class BudgetTest extends TestBase {
 
     @Test(dependsOnMethods = "testLoadBudgetPlanner", groups = "budget")
     public void testSearchServices() {
-        List<WebElement> services = planningPage.searchServices("Catering", 1000);
+        List<WebElement> services = planningPage.search("Catering", 1000);
 
-        assertEquals(1, services.size());
+        assertEquals(2, services.size());
         assertTrue(planningPage.findByCardName("Catering Service").isPresent());
-    }
-
-    @Test(dependsOnMethods = "testLoadBudgetPlanner", groups = "budget")
-    public void testSearchService_notServiceFound() {
-        List<WebElement> services = planningPage.searchServices("Catering", 0);
-
-        assertEquals(0, services.size());
+        assertTrue(planningPage.findByCardName("Buffet Catering").isPresent());
     }
 
     @Test(dependsOnMethods = "testLoadBudgetPlanner", groups = "budget")
     public void testSearchProducts() {
-        List<WebElement> products = planningPage.searchProducts("Decoration", 100);
+        List<WebElement> products = planningPage.search("Decoration", 100);
 
         assertEquals(2, products.size());
         assertTrue(planningPage.findByCardName("Party Hats").isPresent());
         assertTrue(planningPage.findByCardName("Decorative Balloons").isPresent());
     }
 
-    @Test(dependsOnMethods = "testLoadBudgetPlanner", groups = "budget")
-    public void testSearchProducts_notProductsFound() {
-        List<WebElement> services = planningPage.searchProducts("Photography", 0);
-
-        assertEquals(0, services.size());
-    }
-
     @Test(dependsOnMethods = "testSearchProducts", groups = "budget")
     public void testPurchaseProductFromBudget() {
         planningPage.selectCategory("Decoration");
-        BudgetPlanningPage page = planningPage.clickProductSeeMoreButton("Party Hats").clickPurchaseForBudget();
+        BudgetPlanningPage page = planningPage.clickSeeMoreButton("Party Hats").clickPurchaseForBudget();
 
         assertNotNull(page);
-        assertTrue(planningPage.findToaster().isPresent());
+        page.clickPurchasedAndReservedTab();
+
+        assertTrue(page.findNameInTable("Party Hats").isPresent());
+        assertEquals("Purchased", page.getItemStatus("Party Hats"));
     }
 
-    @Test(dependsOnMethods = "testPurchaseProductFromBudget")
-    public void testPurchaseProduct() {
+    @Test(
+            dataProviderClass = BudgetDataProvider.class,
+            dataProvider = "purchaseScenarios",
+            dependsOnMethods = "testPurchaseProductFromBudget"
+    )
+    public void testPurchaseProduct(String productName, String category, double price, String expectedMessage) {
         ProductOverviewPage overviewPage = planningPage.clickHome().clickSeeMoreProducts();
-        ProductDetailsPage detailsPage = overviewPage.clickSeeMoreButton("Photo Frames");
+        ProductDetailsPage detailsPage = overviewPage.clickSeeMoreButton(productName);
 
-        detailsPage.purchaseProduct("Event", 7.0);
+        detailsPage.purchaseProduct(category, price);
 
-
-        assertNotNull(planningPage.findToasterWithMessage("Successfully purchased product!"));
+        assertNotNull(planningPage.findToasterWithMessage(expectedMessage));
     }
-
-    @Test(dependsOnMethods = "testPurchaseProductFromBudget")
-    public void testPurchaseProduct_insufficientFounds() {
-        ProductOverviewPage overviewPage = planningPage.clickHome().clickSeeMoreProducts();
-        ProductDetailsPage detailsPage = overviewPage.clickSeeMoreButton("Event Banner");
-
-        detailsPage.purchaseProduct("Event", 40.0);
-
-        assertNotNull(planningPage.findToasterWithMessage("You do not have enough funds for this purchase!"));
-    }
-
-    @Test(dependsOnMethods = "testPurchaseProductFromBudget")
-    public void testPurchaseProduct_alreadyPurchased() {
-        ProductOverviewPage overviewPage = planningPage.clickHome().clickSeeMoreProducts();
-        ProductDetailsPage detailsPage = overviewPage.clickSeeMoreButton("Party Hats");
-
-        detailsPage.purchaseProduct("Event", 10.0);
-
-        assertNotNull(planningPage.findToasterWithMessage("You have already purchased a product from this category."));
-    }
-
 }

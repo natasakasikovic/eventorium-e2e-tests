@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class OrganizerPage extends HomePage {
 
@@ -20,8 +19,6 @@ public class OrganizerPage extends HomePage {
     }
 
     public OrganizerPage clickHome() {
-        findDrawerOption("Home").ifPresent(WebElement::click);
-        return PageFactory.initElements(driver, OrganizerPage.class);
+        return clickHome(OrganizerPage.class);
     }
-
 }

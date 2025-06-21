@@ -7,8 +7,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Optional;
 
@@ -70,6 +68,11 @@ public class HomePage extends PageBase {
 
     public Optional<WebElement> findToaster() {
         return findElement(toaster);
+    }
+
+    protected <T extends HomePage> T clickHome(Class<T> pageClass) {
+        findDrawerOption("Home").ifPresent(WebElement::click);
+        return PageFactory.initElements(driver, pageClass);
     }
 
     public Optional<WebElement> findDrawerOption(String option) {

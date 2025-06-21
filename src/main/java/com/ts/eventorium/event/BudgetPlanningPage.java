@@ -2,7 +2,7 @@ package com.ts.eventorium.event;
 
 import com.ts.eventorium.auth.OrganizerPage;
 import com.ts.eventorium.solution.ProductDetailsPage;
-import com.ts.eventorium.util.PageBase;
+import jdk.jshell.spi.ExecutionControl;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -12,7 +12,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 
@@ -25,7 +24,7 @@ public class BudgetPlanningPage extends OrganizerPage {
     private WebElement plannerTab;
 
     @FindBy(xpath = "((//div[@role='tablist'])[1]/div/div[@role='tab'])[2]")
-    private WebElement spentTab;
+    private WebElement purchasedAndReservedTab;
 
     @FindBy(xpath = "//app-budget-items")
     private WebElement budgetItems;
@@ -44,14 +43,17 @@ public class BudgetPlanningPage extends OrganizerPage {
     private final By options = By.xpath("//mat-option/span");
 
     private final By deleteButton = By.xpath("//mat-icon[text()='delete']/..");
-    private final By productRadio = By.xpath("//input[@value='product']");
-    private final By serviceRadio = By.xpath("//input[@value='service']");
     private final By searchButton = By.xpath("//button[span[text()='Search']]");
-    private final By productCards = By.xpath("//div[@class='cards']/app-product-card");
-    private final By serviceCards = By.xpath("//div[@class='cards']/app-service-card");
+    private final By suggestions = By.xpath("//div[@class='cards']/app-budget-suggestion-card");
 
-    private static final String PRODUCT_SEE_MORE_PATTERN = "//app-product-card[.//mat-card-title[text()='%s']]//button[.//span[text()='See more']]";
+    private final By table = By.xpath("//table");
+
+    private static final String SEE_MORE_PATTERN = "//app-budget-suggestion-card[.//mat-card-title[text()='%s']]//button[.//span[text()='See more']]";
+    private static final String ITEM_STATUS = "//tr[td[contains(., '%s')]]//mat-chip//span[contains(@class, 'mdc-evolution-chip__text-label')]";
     private static final String CARD_NAME_PATTERN = "//mat-card-title[text()='%s']";
+    private static final String TABLE_NAME_PATTERN = "(//tbody/tr/td[1])[text()='%s']";
+    private static final String TABLE_CATEGORY_PATTERN = "(//tbody/tr/td[2])[text()='%s']";
+    private static final String TABLE_SPENT_AMOUNT = "(//tbody/tr/td[3])[text()='%s']";
 
     public void selectCategory(String name) {
         findTabCategory(name).ifPresent(element -> {
@@ -81,30 +83,22 @@ public class BudgetPlanningPage extends OrganizerPage {
         }
     }
 
-    public List<WebElement> searchServices(String categoryName, double plannedAmount) {
+    public List<WebElement> search(String categoryName, double plannedAmount) {
         addCategory(categoryName);
         selectCategory(categoryName);
 
-        clickRadioButton(serviceRadio);
         setPlannedAmount(categoryName, String.valueOf(plannedAmount));
         clickSearchButton();
 
-        return findServices();
-    }
-
-    public List<WebElement> searchProducts(String categoryName, double plannedAmount) {
-        addCategory(categoryName);
-        selectCategory(categoryName);
-
-        clickRadioButton(productRadio);
-        setPlannedAmount(categoryName, String.valueOf(plannedAmount));
-        clickSearchButton();
-
-        return findProducts();
+        return findSuggestions();
     }
 
     public void clickPlannerTab() {
         waitUntil(elementToBeClickable(plannerTab)).click();
+    }
+
+    public void clickPurchasedAndReservedTab() {
+        waitUntil(elementToBeClickable(purchasedAndReservedTab)).click();
     }
 
     public void clickSearchButton() {
@@ -112,10 +106,9 @@ public class BudgetPlanningPage extends OrganizerPage {
         clickJs(searchButton);
     }
 
-    public ProductDetailsPage clickProductSeeMoreButton(String productName) {
-        String xpath = String.format(PRODUCT_SEE_MORE_PATTERN, productName);
-        waitUntil(elementToBeClickable(By.xpath(xpath))).click();
-
+    // TODO: Also allow ServiceDetailsPage
+    public ProductDetailsPage clickSeeMoreButton(String solutionName) {
+        waitUntil(elementToBeClickable(By.xpath(String.format(SEE_MORE_PATTERN, solutionName)))).click();
         return PageFactory.initElements(driver, ProductDetailsPage.class);
     }
 
@@ -136,23 +129,32 @@ public class BudgetPlanningPage extends OrganizerPage {
                 .findFirst();
     }
 
+    public Optional<WebElement> findNameInTable(String name) {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
+        return findElement(By.xpath(String.format(TABLE_NAME_PATTERN, name)));
+    }
+
+    public String getItemStatus(String itemName) {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
+        Optional<WebElement> statusElementOpt = findElement(By.xpath(String.format(ITEM_STATUS, itemName)));
+
+        return statusElementOpt
+                .map(WebElement::getText)
+                .orElse("Status not found");
+    }
+
     private Optional<WebElement> findNewCategory(String name) {
         return findElements(options).stream()
                 .filter(option -> option.getText().equals(name))
                 .findFirst();
     }
 
-    public List<WebElement> findServices() {
-        waitFor(3, TimeUnit.SECONDS);
-        return findElements(serviceCards);
-    }
-
-    public List<WebElement> findProducts() {
-        waitFor(3, TimeUnit.SECONDS);
-        return findElements(productCards);
-    }
-
     public Optional<WebElement> findByCardName(String name) {
         return findElement(By.xpath(String.format(CARD_NAME_PATTERN, name)));
+    }
+
+    private List<WebElement> findSuggestions() {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(suggestions));
+        return findElements(suggestions);
     }
 }
