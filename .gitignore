@@ -10,6 +10,7 @@ chromedriver.exe
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+resources
 *.iws
 *.iml
 *.ipr

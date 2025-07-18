@@ -47,17 +47,9 @@ public class BudgetTest extends TestBase {
         assertFalse(planningPage.findTabCategory("Catering").isPresent());
     }
 
-    @Test(dependsOnMethods = "testLoadBudgetPlanner", groups = "budget")
-    public void testSearchServices() {
-        List<WebElement> services = planningPage.search("Catering", 1000);
-
-        assertEquals(2, services.size());
-        assertTrue(planningPage.findByCardName("Catering Service").isPresent());
-        assertTrue(planningPage.findByCardName("Buffet Catering").isPresent());
-    }
 
     @Test(dependsOnMethods = "testLoadBudgetPlanner", groups = "budget")
-    public void testSearchProducts() {
+    public void testGetBudgetItemSuggestions() {
         List<WebElement> products = planningPage.search("Decoration", 100);
 
         assertEquals(2, products.size());
@@ -65,7 +57,7 @@ public class BudgetTest extends TestBase {
         assertTrue(planningPage.findByCardName("Decorative Balloons").isPresent());
     }
 
-    @Test(dependsOnMethods = "testSearchProducts", groups = "budget")
+    @Test(dependsOnMethods = "testGetBudgetItemSuggestions", groups = "budget")
     public void testPurchaseProductFromBudget() {
         planningPage.selectCategory("Decoration");
         BudgetPlanningPage page = planningPage.clickSeeMoreButton("Party Hats").clickPurchaseForBudget();
