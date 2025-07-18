@@ -82,11 +82,11 @@ public class BudgetTest extends TestBase {
             dataProvider = "purchaseScenarios",
             dependsOnMethods = "testPurchaseProductFromBudget"
     )
-    public void testPurchaseProduct(String productName, String category, double price, String expectedMessage) {
+    public void testPurchaseProduct(String productName, String eventName, double price, String expectedMessage) {
         ProductOverviewPage overviewPage = planningPage.clickHome().clickSeeMoreProducts();
         ProductDetailsPage detailsPage = overviewPage.clickSeeMoreButton(productName);
 
-        detailsPage.purchaseProduct(category, price);
+        detailsPage.purchaseProduct(eventName, price);
 
         assertNotNull(planningPage.findToasterWithMessage(expectedMessage));
     }

@@ -1,12 +1,9 @@
 package com.ts.eventorium.event;
 
 import com.ts.eventorium.util.PageBase;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class CreateEventPage extends PageBase {
@@ -38,7 +35,7 @@ public class CreateEventPage extends PageBase {
     @FindBy(id = "submit")
     private WebElement budgetPlanningButton;
 
-    private final By options = By.xpath("//mat-option/span");
+    private static final String OPTION_PATTERN = "//mat-option//span[contains(text(), '%s')]";
 
     public BudgetPlanningPage clickBudgetPlanningButton() {
         budgetPlanningButton.click();
@@ -66,28 +63,15 @@ public class CreateEventPage extends PageBase {
     }
 
     public void selectEventType(String eventType) {
-        selectOption(eventTypeSelect, eventType);
+        selectOption(eventTypeSelect, eventType, OPTION_PATTERN);
     }
 
     public void selectPrivacy(String privacy) {
-        selectOption(privacySelect, privacy);
+        selectOption(privacySelect, privacy, OPTION_PATTERN);
     }
 
     public void selectCity(String city) {
-        selectOption(citySelect, city);
+        selectOption(citySelect, city, OPTION_PATTERN);
     }
 
-    private void selectOption(WebElement select, String option) {
-        select.click();
-        WebDriverWait wait = new WebDriverWait(driver, 5);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(options));
-
-        findElements(options).stream()
-                .filter(element -> element.getText().equals(option))
-                .findFirst()
-                .ifPresent(element -> {
-                    wait.until(ExpectedConditions.elementToBeClickable(element));
-                    element.click();
-                });
-    }
 }

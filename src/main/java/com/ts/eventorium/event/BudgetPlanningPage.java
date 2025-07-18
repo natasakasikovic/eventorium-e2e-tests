@@ -2,7 +2,6 @@ package com.ts.eventorium.event;
 
 import com.ts.eventorium.auth.OrganizerPage;
 import com.ts.eventorium.solution.ProductDetailsPage;
-import jdk.jshell.spi.ExecutionControl;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -103,7 +102,7 @@ public class BudgetPlanningPage extends OrganizerPage {
 
     public void clickSearchButton() {
         waitUntil(elementToBeClickable(searchButton));
-        clickJs(searchButton);
+        click(searchButton);
     }
 
     // TODO: Also allow ServiceDetailsPage

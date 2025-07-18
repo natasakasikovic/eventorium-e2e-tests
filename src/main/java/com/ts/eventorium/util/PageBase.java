@@ -5,6 +5,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -67,12 +68,24 @@ public abstract class PageBase {
         driver.manage().timeouts().implicitlyWait(time, unit);
     }
 
-    protected WebElement waitUntil(ExpectedCondition<WebElement> condition) {
+    protected void selectOption(WebElement matSelect, String option, String optionPattern) {
+        waitUntil(ExpectedConditions.invisibilityOfElementLocated(By.className("cdk-overlay-backdrop")));
+
+        WebElement trigger = matSelect.findElement(By.className("mat-mdc-select-trigger"));
+        waitUntil(ExpectedConditions.elementToBeClickable(trigger)).click();
+
+        String optionXpath = String.format(optionPattern, option);
+        WebElement optionElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(optionXpath)));
+        waitUntil(ExpectedConditions.elementToBeClickable(optionElement)).click();
+    }
+
+    protected <T> T waitUntil(ExpectedCondition<T> condition) {
         return waitUntil(condition, 5);
     }
 
-    protected WebElement waitUntil(ExpectedCondition<WebElement> condition, long timeOutInSeconds) {
-        return (new WebDriverWait(driver, timeOutInSeconds)).until(condition);
+    protected <T> T waitUntil(ExpectedCondition<T> condition, int seconds) {
+        WebDriverWait wait = new WebDriverWait(driver, seconds);
+        return wait.until(condition);
     }
 
 }

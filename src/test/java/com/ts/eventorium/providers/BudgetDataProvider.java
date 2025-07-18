@@ -7,9 +7,9 @@ public class BudgetDataProvider {
     @DataProvider(name = "purchaseScenarios")
     public static Object[][] purchaseScenarios() {
         return new Object[][] {
-                {"Photo Frames", "Event", 7.0, "Successfully purchased product!"},
-                {"Event Banner", "Event", 40.0, "You do not have enough funds for this purchase!"},
-                {"Party Hats", "Event", 10.0, "Solution is already processed"}
+                {"Photo Frames", "Sombor Conference", 7.0, "Successfully purchased product!"},
+                {"Event Banner", "Sombor Conference", 40.0, "You do not have enough funds for this purchase!"},
+                {"Party Hats", "Sombor Conference", 10.0, "Solution is already processed"}
         };
     }
 }
