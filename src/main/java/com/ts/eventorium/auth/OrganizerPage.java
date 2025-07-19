@@ -1,0 +1,24 @@
+package com.ts.eventorium.auth;
+
+import com.ts.eventorium.event.CreateEventPage;
+import com.ts.eventorium.home.HomePage;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+public class OrganizerPage extends HomePage {
+
+    @FindBy(xpath = "//button/span[text()='Create event']/..")
+    private WebElement createEventButton;
+
+    public CreateEventPage clickCreateEventButton() {
+        waitUntil(ExpectedConditions.elementToBeClickable(createEventButton)).click();
+
+        return PageFactory.initElements(driver, CreateEventPage.class);
+    }
+
+    public OrganizerPage clickHome() {
+        return clickHome(OrganizerPage.class);
+    }
+}
