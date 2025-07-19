@@ -1,12 +1,12 @@
 package com.ts.eventorium.event;
 
-import com.ts.eventorium.util.PageBase;
-import org.openqa.selenium.WebElement;
+import com.ts.eventorium.auth.OrganizerPage;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
-
-public class CreateEventPage extends PageBase {
+public class CreateEventPage extends OrganizerPage {
 
     @FindBy(css = "#eventTypeSelect")
     private WebElement eventTypeSelect;
@@ -59,6 +59,8 @@ public class CreateEventPage extends PageBase {
     }
 
     public void setEventDate(String eventDate) {
+        eventDateInput.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        eventDateInput.sendKeys(Keys.DELETE);
         eventDateInput.sendKeys(eventDate);
     }
 
@@ -74,4 +76,16 @@ public class CreateEventPage extends PageBase {
         selectOption(citySelect, city, OPTION_PATTERN);
     }
 
+    public WebElement findDialog(String expectedMessage) {
+        WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//mat-dialog-content[contains(@class, 'custom-dialog-content')]//p[contains(text(), '" + expectedMessage + "')]")
+        ));
+        if (messageElement.getText().contains(expectedMessage)) return messageElement;
+        return null;
+    }
+
+    public void closeDialog() {
+        WebElement overlay = driver.findElement(By.cssSelector(".cdk-overlay-backdrop"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", overlay);
+    }
 }
