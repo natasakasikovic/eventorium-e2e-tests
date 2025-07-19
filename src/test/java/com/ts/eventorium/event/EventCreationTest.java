@@ -14,6 +14,7 @@ public class EventCreationTest extends TestBase {
     private CreateEventPage page;
     private BudgetPlanningPage budgetPlanningPage;
     private CreateAgendaPage createAgendaPage;
+    private EventOverviewPage eventOverviewPage;
     private String eventName = "Test Event " + System.currentTimeMillis();
 
     @Test(groups = "event")
@@ -79,10 +80,17 @@ public class EventCreationTest extends TestBase {
 
     @Test(groups = "event", dependsOnMethods = "testRemoveInvalidActivityAndFinishAgenda")
     public void testEventIsVisibleToUsers() {
-        EventOverviewPage eventOverviewPage = homePage.clickSeeMoreEvents();
+        eventOverviewPage = homePage.clickSeeMoreEvents();
         eventOverviewPage.search(eventName);
         WebElement card = eventOverviewPage.findCard(eventName).orElse(null);
         assertNotNull(card);
+    }
+
+    @Test(groups = "event", dependsOnMethods = "testEventIsVisibleToUsers")
+    public void testExportGuestListPdf() throws InterruptedException {
+        EventDetailsPage detailsPage = eventOverviewPage.clickSeeMoreButton(eventName);
+        detailsPage.clickExportGuestList();
+        Thread.sleep(3000); // to show that pdf is downloaded
     }
 
     private String getFutureDate() {
