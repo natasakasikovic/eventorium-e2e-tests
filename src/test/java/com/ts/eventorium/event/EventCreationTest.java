@@ -1,6 +1,7 @@
 package com.ts.eventorium.event;
 
 import com.ts.eventorium.util.TestBase;
+import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
@@ -13,13 +14,14 @@ public class EventCreationTest extends TestBase {
     private CreateEventPage page;
     private BudgetPlanningPage budgetPlanningPage;
     private CreateAgendaPage createAgendaPage;
+    private String eventName = "Test Event " + System.currentTimeMillis();
 
     @Test(groups = "event")
     public void testInvalidEventDateShowsDialog() {
         page = homePage.clickLoginButton().signInAsOrganizer().clickCreateEventButton();
 
         page.selectEventType("Wedding");
-        page.setName("Event");
+        page.setName(eventName);
         page.setDescription("Description");
         page.setAddress("Address");
         page.setMaxParticipants("100");
@@ -68,9 +70,19 @@ public class EventCreationTest extends TestBase {
     @Test(groups = "event", dependsOnMethods = "testAddInvalidActivityShowsError")
     public void testRemoveInvalidActivityAndFinishAgenda() {
         createAgendaPage.removeActivityByName("Main activity");
-        createAgendaPage.finishAgenda();
+        homePage = createAgendaPage.finishAgenda();
 
         assertNotNull(createAgendaPage.findDialog("Event created successfully!"));
+        createAgendaPage.closeDialog();
+        assertNotNull(homePage);
+    }
+
+    @Test(groups = "event", dependsOnMethods = "testRemoveInvalidActivityAndFinishAgenda")
+    public void testEventIsVisibleToUsers() {
+        EventOverviewPage eventOverviewPage = homePage.clickSeeMoreEvents();
+        eventOverviewPage.search(eventName);
+        WebElement card = eventOverviewPage.findCard(eventName).orElse(null);
+        assertNotNull(card);
     }
 
     private String getFutureDate() {

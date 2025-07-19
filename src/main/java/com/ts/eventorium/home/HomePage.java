@@ -1,6 +1,7 @@
 package com.ts.eventorium.home;
 
 import com.ts.eventorium.auth.LoginPage;
+import com.ts.eventorium.event.EventOverviewPage;
 import com.ts.eventorium.solution.ProductOverviewPage;
 import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.By;
@@ -50,8 +51,9 @@ public class HomePage extends PageBase {
         clickSeeMoreContentButton("service");
     }
 
-    public void clickSeeMoreEvents() {
+    public EventOverviewPage clickSeeMoreEvents() {
         clickSeeMoreContentButton("event");
+        return PageFactory.initElements(driver, EventOverviewPage.class);
     }
 
     private void clickSeeMoreContentButton(String option) {
