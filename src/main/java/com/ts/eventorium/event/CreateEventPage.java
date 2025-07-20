@@ -75,17 +75,4 @@ public class CreateEventPage extends OrganizerPage {
     public void selectCity(String city) {
         selectOption(citySelect, city, OPTION_PATTERN);
     }
-
-    public WebElement findDialog(String expectedMessage) {
-        WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//mat-dialog-content[contains(@class, 'custom-dialog-content')]//p[contains(text(), '" + expectedMessage + "')]")
-        ));
-        if (messageElement.getText().contains(expectedMessage)) return messageElement;
-        return null;
-    }
-
-    public void closeDialog() {
-        WebElement overlay = driver.findElement(By.cssSelector(".cdk-overlay-backdrop"));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", overlay);
-    }
 }

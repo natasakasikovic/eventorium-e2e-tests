@@ -87,17 +87,4 @@ public class CreateAgendaPage extends OrganizerPage {
         WebElement button = driver.findElement(By.xpath(xpath));
         button.click();
     }
-
-    public WebElement findDialog(String expectedMessage) {
-        WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//mat-dialog-content[contains(@class, 'custom-dialog-content')]")
-        ));
-        if (messageElement.getText().contains(expectedMessage)) return messageElement;
-        return null;
-    }
-
-    public void closeDialog() {
-        WebElement overlay = driver.findElement(By.cssSelector(".cdk-overlay-backdrop"));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", overlay);
-    }
 }
