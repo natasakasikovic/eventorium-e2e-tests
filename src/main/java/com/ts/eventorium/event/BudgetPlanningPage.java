@@ -2,6 +2,7 @@ package com.ts.eventorium.event;
 
 import com.ts.eventorium.auth.OrganizerPage;
 import com.ts.eventorium.solution.ProductDetailsPage;
+import com.ts.eventorium.solution.ServiceDetailsPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -51,11 +52,14 @@ public class BudgetPlanningPage extends OrganizerPage {
     private final By table = By.xpath("//table");
 
     private static final String SEE_MORE_PATTERN = "//app-budget-suggestion-card[.//mat-card-title[text()='%s']]//button[.//span[text()='See more']]";
-    private static final String ITEM_STATUS = "//tr[td[contains(., '%s')]]//mat-chip//span[contains(@class, 'mdc-evolution-chip__text-label')]";
     private static final String CARD_NAME_PATTERN = "//mat-card-title[text()='%s']";
+
+    private static final String TABLE_STATUS_PATTERN = "//tr[td[contains(., '%s')]]//mat-chip//span[contains(@class, 'mdc-evolution-chip__text-label')]";
     private static final String TABLE_NAME_PATTERN = "(//tbody/tr/td[1])[text()='%s']";
     private static final String TABLE_CATEGORY_PATTERN = "(//tbody/tr/td[2])[text()='%s']";
     private static final String TABLE_SPENT_AMOUNT = "(//tbody/tr/td[3])[text()='%s']";
+    private static final String TABLE_PLANNED_AMOUNT = "(//tbody/tr/td[4])[text()='%s']";
+    private static final String TABLE_PLANNED_AMOUNT_INPUT = "(//tbody/tr/td[4])[text()='%s']/input";
 
     public CreateAgendaPage clickAgendaCreationButton() {
         waitUntil(ExpectedConditions.visibilityOf(agendaCreationButton));
@@ -114,10 +118,11 @@ public class BudgetPlanningPage extends OrganizerPage {
         click(searchButton);
     }
 
-    // TODO: Also allow ServiceDetailsPage
-    public ProductDetailsPage clickSeeMoreButton(String solutionName) {
+    public <T> T clickSeeMoreButton(String solutionName, Class<T> pageClass) {
+        if (!pageClass.equals(ProductDetailsPage.class) && !pageClass.equals(ServiceDetailsPage.class))
+            throw new IllegalArgumentException("Unsupported page class: " + pageClass.getName());
         waitUntil(elementToBeClickable(By.xpath(String.format(SEE_MORE_PATTERN, solutionName)))).click();
-        return PageFactory.initElements(driver, ProductDetailsPage.class);
+        return PageFactory.initElements(driver, pageClass);
     }
 
     public void setPlannedAmount(String categoryName, String plannedAmount)  {
@@ -143,22 +148,39 @@ public class BudgetPlanningPage extends OrganizerPage {
     }
 
     public String getItemStatus(String itemName) {
-        waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
-        Optional<WebElement> statusElementOpt = findElement(By.xpath(String.format(ITEM_STATUS, itemName)));
+        return getCellValue(itemName, TABLE_STATUS_PATTERN);
+    }
 
-        return statusElementOpt
+    public String getSpentAmount(String itemName) {
+        return getCellValue(itemName, TABLE_SPENT_AMOUNT);
+    }
+
+    public String getPlannedAmount(String itemName) {
+        return getCellValue(itemName, TABLE_PLANNED_AMOUNT);
+    }
+
+    public String getTablePlannedAmountInput(String itemName) {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
+        String xpath = String.format(TABLE_PLANNED_AMOUNT_INPUT, itemName);
+        return getInputValue(By.xpath(xpath));
+    }
+
+    public Optional<WebElement> findByCardName(String name) {
+        return findElement(By.xpath(String.format(CARD_NAME_PATTERN, name)));
+    }
+
+    private String getCellValue(String itemName, String pattern) {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
+        Optional<WebElement> statusElement = findElement(By.xpath(String.format(pattern, itemName)));
+        return statusElement
                 .map(WebElement::getText)
-                .orElse("Status not found");
+                .orElse("Not found");
     }
 
     private Optional<WebElement> findNewCategory(String name) {
         return findElements(options).stream()
                 .filter(option -> option.getText().equals(name))
                 .findFirst();
-    }
-
-    public Optional<WebElement> findByCardName(String name) {
-        return findElement(By.xpath(String.format(CARD_NAME_PATTERN, name)));
     }
 
     private List<WebElement> findSuggestions() {

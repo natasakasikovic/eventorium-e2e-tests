@@ -18,6 +18,7 @@ public class ProductDetailsPage extends HomePage {
     private final By options = By.xpath("//mat-option/span");
     private final By plannedAmountInput = By.xpath("//input[@formcontrolname='plannedAmount']");
     private final By confirmButton = By.xpath("//button[span[text()='Confirm']]");
+    private final By addToPlannerButton = By.xpath("//button[.//span[contains(text(), 'Add to planner')]]");
 
     public void purchaseProduct(String eventName, double plannedAmount) {
         clickPurchaseButton();
@@ -44,6 +45,11 @@ public class ProductDetailsPage extends HomePage {
         return findElements(options).stream()
                 .filter(element -> element.getText().contains(option))
                 .findFirst();
+    }
+
+    public BudgetPlanningPage clickAddToPlanner() {
+        waitUntil(elementToBeClickable(addToPlannerButton)).click();
+        return PageFactory.initElements(driver, BudgetPlanningPage.class);
     }
 
 }

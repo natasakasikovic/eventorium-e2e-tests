@@ -50,6 +50,12 @@ public abstract class PageBase {
         findElement(locator).ifPresent(WebElement::click);
     }
 
+    protected String getInputValue(By locator) {
+        WebElement input = waitUntil(ExpectedConditions.visibilityOfElementLocated(locator));
+        String value = input.getAttribute("value");
+        return value != null ? value.trim() : "";
+    }
+
     protected void clickJs(By locator) {
         findElement(locator).ifPresent(element ->
                 ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element));

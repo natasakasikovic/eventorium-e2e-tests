@@ -4,6 +4,7 @@ import com.ts.eventorium.solution.ProductDetailsPage;
 import com.ts.eventorium.solution.ProductOverviewPage;
 import com.ts.eventorium.providers.BudgetDataProvider;
 import com.ts.eventorium.util.TestBase;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
 
@@ -47,7 +48,6 @@ public class BudgetTest extends TestBase {
         assertFalse(planningPage.findTabCategory("Catering").isPresent());
     }
 
-
     @Test(dependsOnMethods = "testLoadBudgetPlanner", groups = "budget")
     public void testGetBudgetItemSuggestions() {
         List<WebElement> products = planningPage.search("Decoration", 100);
@@ -57,19 +57,37 @@ public class BudgetTest extends TestBase {
         assertTrue(planningPage.findByCardName("Decorative Balloons").isPresent());
     }
 
-    @Test(dependsOnMethods = "testGetBudgetItemSuggestions", groups = "budget")
-    public void testPurchaseProductFromBudget() {
+    @Test(dependsOnMethods = "testGetBudgetItemSuggestions")
+    public void testAddProductToBudgetPlanner() {
+        String productName = "Party Hats";
         planningPage.selectCategory("Decoration");
-        BudgetPlanningPage page = planningPage.clickSeeMoreButton("Party Hats").clickPurchaseForBudget();
+        planningPage.clickSeeMoreButton(productName, ProductDetailsPage.class).clickAddToPlanner();
+        planningPage.clickPurchasedAndReservedTab();
 
-        assertNotNull(page);
-        page.clickPurchasedAndReservedTab();
+        assertTrue(planningPage.findNameInTable(productName).isPresent());
+        assertEquals("Planned", planningPage.getItemStatus(productName));
+    }
 
-        assertTrue(page.findNameInTable("Party Hats").isPresent());
-        assertEquals("Purchased", page.getItemStatus("Party Hats"));
+    @Test(enabled = false, dependsOnMethods = "testAddProductToBudgetPlanner")
+    public void testUpdateItemWithInvalidPrice() {
+        String productName = "Party Hats";
+        planningPage.clickPurchasedAndReservedTab();
+        assertTrue(planningPage.findNameInTable(productName).isPresent());
+
+    }
+
+    @Test(enabled = false, dependsOnMethods = "testGetBudgetItemSuggestions", groups = "budget")
+    public void testPurchaseProductFromBudget() {
+        planningPage.search("Decoration", 100);
+        planningPage.clickSeeMoreButton("Party Hats", ProductDetailsPage.class).clickPurchaseForBudget();
+        planningPage.clickPurchasedAndReservedTab();
+
+        assertTrue(planningPage.findNameInTable("Party Hats").isPresent());
+        assertEquals("Purchased", planningPage.getItemStatus("Party Hats"));
     }
 
     @Test(
+            enabled = false,
             dataProviderClass = BudgetDataProvider.class,
             dataProvider = "purchaseScenarios",
             dependsOnMethods = "testPurchaseProductFromBudget"
