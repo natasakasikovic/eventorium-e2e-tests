@@ -3,6 +3,7 @@ package com.ts.eventorium.event;
 import com.ts.eventorium.auth.OrganizerPage;
 import com.ts.eventorium.solution.ProductDetailsPage;
 import com.ts.eventorium.solution.ServiceDetailsPage;
+import com.ts.eventorium.util.BudgetAction;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -56,10 +57,11 @@ public class BudgetPlanningPage extends OrganizerPage {
 
     private static final String TABLE_STATUS_PATTERN = "//tr[td[contains(., '%s')]]//mat-chip//span[contains(@class, 'mdc-evolution-chip__text-label')]";
     private static final String TABLE_NAME_PATTERN = "(//tbody/tr/td[1])[text()='%s']";
-    private static final String TABLE_CATEGORY_PATTERN = "(//tbody/tr/td[2])[text()='%s']";
-    private static final String TABLE_SPENT_AMOUNT = "(//tbody/tr/td[3])[text()='%s']";
-    private static final String TABLE_PLANNED_AMOUNT = "(//tbody/tr/td[4])[text()='%s']";
-    private static final String TABLE_PLANNED_AMOUNT_INPUT = "(//tbody/tr/td[4])[text()='%s']/input";
+    private static final String TABLE_CATEGORY_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[2]";
+    private static final String TABLE_SPENT_AMOUNT = "//tbody/tr[td[1][text()='%s']]/td[3]";
+    private static final String TABLE_PLANNED_AMOUNT = "//tbody/tr[td[1][text()='%s']]/td[4]";
+    private static final String TABLE_PLANNED_AMOUNT_INPUT = "//tbody/tr[td[1][text()='%s']]/td[4]/input";
+    private static final String TABLE_ACTION_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[6]//button[.//mat-icon[text()='%s']]";
 
     public CreateAgendaPage clickAgendaCreationButton() {
         waitUntil(ExpectedConditions.visibilityOf(agendaCreationButton));
@@ -70,8 +72,7 @@ public class BudgetPlanningPage extends OrganizerPage {
     public void selectCategory(String name) {
         findTabCategory(name).ifPresent(element -> {
             element.click();
-            (new WebDriverWait(driver, 5))
-                    .until(elementToBeClickable(By.id(name + "-plannedInput")));
+            waitUntil(elementToBeClickable(By.id(name + "-plannedInput")));
         });
     }
 
@@ -93,6 +94,11 @@ public class BudgetPlanningPage extends OrganizerPage {
                 addCategoryButton.click();
             });
         }
+    }
+
+    public void clickActionButton(String itemName, BudgetAction action) {
+        String xpath = String.format(TABLE_ACTION_PATTERN, itemName, action.toString());
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath))).click();
     }
 
     public List<WebElement> search(String categoryName, double plannedAmount) {
@@ -159,10 +165,16 @@ public class BudgetPlanningPage extends OrganizerPage {
         return getCellValue(itemName, TABLE_PLANNED_AMOUNT);
     }
 
-    public String getTablePlannedAmountInput(String itemName) {
+    public String getPlannedAmountInput(String itemName) {
         waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
         String xpath = String.format(TABLE_PLANNED_AMOUNT_INPUT, itemName);
         return getInputValue(By.xpath(xpath));
+    }
+
+    public void updatePlannedAmount(String itemName, double newPrice) {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
+        String xpath = String.format(TABLE_PLANNED_AMOUNT_INPUT, itemName);
+        set(By.xpath(xpath), String.valueOf(newPrice));
     }
 
     public Optional<WebElement> findByCardName(String name) {
