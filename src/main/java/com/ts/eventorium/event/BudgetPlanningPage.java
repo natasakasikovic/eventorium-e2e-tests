@@ -1,6 +1,7 @@
 package com.ts.eventorium.event;
 
 import com.ts.eventorium.auth.OrganizerPage;
+import com.ts.eventorium.solution.ReservationDialog;
 import com.ts.eventorium.solution.SolutionDetailsPage;
 import com.ts.eventorium.util.BudgetAction;
 import org.openqa.selenium.By;
@@ -175,6 +176,11 @@ public class BudgetPlanningPage extends OrganizerPage {
         waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
         String xpath = String.format(TABLE_PLANNED_AMOUNT_INPUT, itemName);
         set(By.xpath(xpath), String.valueOf(newPrice));
+    }
+
+    public void makeReservation(String fromTime, String toTime) {
+        ReservationDialog reservationDialog = new ReservationDialog();
+        reservationDialog.reserveService(fromTime, toTime);
     }
 
     public Optional<WebElement> findByCardName(String name) {

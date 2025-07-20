@@ -9,7 +9,6 @@ public class BudgetDataProvider {
     public static final String CATEGORY_VENUE_BOOKING = "Venue Booking";
     public static final String CATEGORY_ENTERTAINMENT = "Entertainment";
 
-    public static final String PRODUCT_PARTY_HATS = "Party Hats";
     public static final String PRODUCT_TO_EDIT = "Decorative Balloons";
     public static final String PRODUCT_TO_PURCHASE = "Event Mugs";
 

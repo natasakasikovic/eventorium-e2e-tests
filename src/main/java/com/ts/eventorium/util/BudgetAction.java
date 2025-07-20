@@ -4,7 +4,7 @@ public enum BudgetAction {
     SAVE("save"),
     PURCHASE("shopping_cart"),
     DELETE("delete"),
-    RESERVE("schedule");
+    RESERVE("calendar_today");
 
     private final String name;
 

@@ -67,7 +67,6 @@ public class BudgetTest extends TestBase {
         planningPage.clickPurchasedAndReservedTab();
 
         assertTrue(planningPage.findNameInTable(AUTOMATIC_SERVICE).isPresent());
-        assertTrue(planningPage.findNameInTable(MANUAL_SERVICE).isPresent());
         assertTrue(planningPage.findNameInTable(PRODUCT_TO_EDIT).isPresent());
         assertTrue(planningPage.findNameInTable(PRODUCT_TO_PURCHASE).isPresent());
 
@@ -111,12 +110,27 @@ public class BudgetTest extends TestBase {
 
     @Test(dependsOnMethods = "testAddItemsToBudgetPlanner")
     public void testReserveServiceFromBudgetPlanner() {
+        planningPage.clickPurchasedAndReservedTab();
+        planningPage.clickActionButton(AUTOMATIC_SERVICE, BudgetAction.RESERVE);
+        planningPage.makeReservation("01:00 PM", "03:00 PM");
 
+        assertEquals("Reserved", planningPage.getItemStatus(AUTOMATIC_SERVICE));
+        assertEquals("800.00", planningPage.getPlannedAmount(AUTOMATIC_SERVICE));
+        assertEquals("720.00", planningPage.getSpentAmount(AUTOMATIC_SERVICE));
     }
 
     @Test(dependsOnMethods = "testAddItemsToBudgetPlanner")
     public void testReserveServiceFromBudget() {
         planningPage.clickPlannerTab();
+        planningPage.search(CATEGORY_VENUE_BOOKING, 1000.0);
+        SolutionDetailsPage detailsPage = planningPage.clickSeeMoreButton(MANUAL_SERVICE);
+        detailsPage.clickReserveButton();
+        detailsPage.makeReservation("07:00 AM", "01:00 PM");
+        planningPage.clickPurchasedAndReservedTab();
+
+        assertEquals("Pending", planningPage.getItemStatus(MANUAL_SERVICE));
+        assertEquals("1000", planningPage.getPlannedAmountInput(MANUAL_SERVICE));
+        assertEquals("0.00", planningPage.getSpentAmount(MANUAL_SERVICE));
     }
 
     @Test(dependsOnMethods = "testDeleteBudgetItem", groups = "budget")
