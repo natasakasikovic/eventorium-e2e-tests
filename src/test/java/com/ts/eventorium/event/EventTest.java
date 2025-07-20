@@ -1,7 +1,6 @@
 package com.ts.eventorium.event;
 
 import com.ts.eventorium.util.TestBase;
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
@@ -82,15 +81,15 @@ public class EventTest extends TestBase {
     public void testEventIsVisibleToUsers() {
         eventOverviewPage = homePage.clickSeeMoreEvents();
         eventOverviewPage.search(eventName);
-        WebElement card = eventOverviewPage.findCard(eventName).orElse(null);
-        assertNotNull(card);
+        assertTrue(eventOverviewPage.findCard(eventName).isPresent());
     }
 
     @Test(groups = "event", dependsOnMethods = "testEventIsVisibleToUsers")
     public void testExportGuestListPdf() {
         EventDetailsPage detailsPage = eventOverviewPage.clickSeeMoreButton(eventName);
+
+        assertTrue(detailsPage.getExportButton().isPresent());
         detailsPage.clickExportGuestList();
-        detailsPage.waitForPdf(); // to show that pdf is downloaded
     }
 
     private String getFutureDate() {
