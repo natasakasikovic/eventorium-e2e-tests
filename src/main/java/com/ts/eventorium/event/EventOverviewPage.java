@@ -1,7 +1,6 @@
 package com.ts.eventorium.event;
 
 import com.ts.eventorium.home.HomePage;
-import com.ts.eventorium.solution.ProductDetailsPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
