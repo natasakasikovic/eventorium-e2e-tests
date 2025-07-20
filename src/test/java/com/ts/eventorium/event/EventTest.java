@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.*;
 
-public class EventCreationTest extends TestBase {
+public class EventTest extends TestBase {
 
     private CreateEventPage page;
     private BudgetPlanningPage budgetPlanningPage;
@@ -87,10 +87,10 @@ public class EventCreationTest extends TestBase {
     }
 
     @Test(groups = "event", dependsOnMethods = "testEventIsVisibleToUsers")
-    public void testExportGuestListPdf() throws InterruptedException {
+    public void testExportGuestListPdf() {
         EventDetailsPage detailsPage = eventOverviewPage.clickSeeMoreButton(eventName);
         detailsPage.clickExportGuestList();
-        Thread.sleep(3000); // to show that pdf is downloaded
+        detailsPage.waitForPdf(); // to show that pdf is downloaded
     }
 
     private String getFutureDate() {

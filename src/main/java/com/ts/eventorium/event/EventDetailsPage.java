@@ -12,4 +12,10 @@ public class EventDetailsPage extends HomePage {
         waitUntil(ExpectedConditions.elementToBeClickable(exportGuestListButton));
         click(exportGuestListButton);
     }
+
+    public void waitForPdf() {
+        long startTime = System.currentTimeMillis();
+        waitUntil(driver -> System.currentTimeMillis() - startTime >= 3000, 4);
+    }
+
 }
