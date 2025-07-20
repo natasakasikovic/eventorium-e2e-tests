@@ -1,8 +1,7 @@
 package com.ts.eventorium.event;
 
 import com.ts.eventorium.auth.OrganizerPage;
-import com.ts.eventorium.solution.ProductDetailsPage;
-import com.ts.eventorium.solution.ServiceDetailsPage;
+import com.ts.eventorium.solution.SolutionDetailsPage;
 import com.ts.eventorium.util.BudgetAction;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -102,6 +101,8 @@ public class BudgetPlanningPage extends OrganizerPage {
     }
 
     public List<WebElement> search(String categoryName, double plannedAmount) {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(searchButton));
+
         addCategory(categoryName);
         selectCategory(categoryName);
 
@@ -113,6 +114,7 @@ public class BudgetPlanningPage extends OrganizerPage {
 
     public void clickPlannerTab() {
         waitUntil(elementToBeClickable(plannerTab)).click();
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(searchButton));
     }
 
     public void clickPurchasedAndReservedTab() {
@@ -124,11 +126,9 @@ public class BudgetPlanningPage extends OrganizerPage {
         click(searchButton);
     }
 
-    public <T> T clickSeeMoreButton(String solutionName, Class<T> pageClass) {
-        if (!pageClass.equals(ProductDetailsPage.class) && !pageClass.equals(ServiceDetailsPage.class))
-            throw new IllegalArgumentException("Unsupported page class: " + pageClass.getName());
+    public SolutionDetailsPage clickSeeMoreButton(String solutionName) {
         waitUntil(elementToBeClickable(By.xpath(String.format(SEE_MORE_PATTERN, solutionName)))).click();
-        return PageFactory.initElements(driver, pageClass);
+        return PageFactory.initElements(driver, SolutionDetailsPage.class);
     }
 
     public void setPlannedAmount(String categoryName, String plannedAmount)  {

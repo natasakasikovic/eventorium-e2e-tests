@@ -1,16 +1,17 @@
 package com.ts.eventorium.event;
 
-import com.ts.eventorium.solution.ProductDetailsPage;
-import com.ts.eventorium.solution.ProductOverviewPage;
+import com.ts.eventorium.solution.SolutionDetailsPage;
 import com.ts.eventorium.providers.BudgetDataProvider;
 import com.ts.eventorium.util.BudgetAction;
 import com.ts.eventorium.util.TestBase;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.ts.eventorium.providers.BudgetDataProvider.*;
 import static org.junit.Assert.*;
 
 public class BudgetTest extends TestBase {
@@ -21,9 +22,9 @@ public class BudgetTest extends TestBase {
     public void testLoadBudgetPlanner() {
         CreateEventPage page = homePage.clickLoginButton().signInAsOrganizer().clickCreateEventButton();
 
-        page.setName("Event");
+        page.setName("Event " + System.currentTimeMillis());
         page.setDescription("Description");
-        page.setEventDate("4/30/2026");
+        page.setEventDate(getFutureDate());
         page.setAddress("Address");
         page.setMaxParticipants("100");
         page.selectEventType("Wedding");
@@ -51,7 +52,7 @@ public class BudgetTest extends TestBase {
 
     @Test(dependsOnMethods = "testLoadBudgetPlanner", groups = "budget")
     public void testGetBudgetItemSuggestions() {
-        List<WebElement> products = planningPage.search("Decoration", 100);
+        List<WebElement> products = planningPage.search(CATEGORY_DECORATION, 100);
 
         assertEquals(2, products.size());
         assertTrue(planningPage.findByCardName("Party Hats").isPresent());
@@ -59,34 +60,35 @@ public class BudgetTest extends TestBase {
     }
 
     @Test(dependsOnMethods = "testGetBudgetItemSuggestions")
-    public void testAddProductToBudgetPlanner() {
-        String partyHats = "Party Hats";
-        String decorativeBalloons = "Decorative Balloons";
-        planningPage.selectCategory("Decoration");
-        planningPage.clickSeeMoreButton(partyHats, ProductDetailsPage.class).clickAddToPlanner();
-        planningPage.search("Decoration", 20.0);
-        planningPage.clickSeeMoreButton(decorativeBalloons, ProductDetailsPage.class).clickAddToPlanner();
+    public void testAddItemsToBudgetPlanner() {
+        addToPlanner(CATEGORY_ENTERTAINMENT, AUTOMATIC_SERVICE, 800.0);
+        addToPlanner(CATEGORY_DECORATION, PRODUCT_TO_EDIT, 20.0);
+        addToPlanner(CATEGORY_GUEST_MANAGEMENT, PRODUCT_TO_PURCHASE, 100.0);
         planningPage.clickPurchasedAndReservedTab();
 
-        assertTrue(planningPage.findNameInTable(partyHats).isPresent());
-        assertTrue(planningPage.findNameInTable(decorativeBalloons).isPresent());
-//        assertEquals("Planned", planningPage.getItemStatus(productName));
-        assertEquals("100", planningPage.getPlannedAmountInput(partyHats));
-        assertEquals("20", planningPage.getPlannedAmountInput(decorativeBalloons));
-        assertEquals("0.00", planningPage.getSpentAmount(decorativeBalloons));
-        assertEquals("0.00", planningPage.getSpentAmount(partyHats));
+        assertTrue(planningPage.findNameInTable(AUTOMATIC_SERVICE).isPresent());
+        assertTrue(planningPage.findNameInTable(MANUAL_SERVICE).isPresent());
+        assertTrue(planningPage.findNameInTable(PRODUCT_TO_EDIT).isPresent());
+        assertTrue(planningPage.findNameInTable(PRODUCT_TO_PURCHASE).isPresent());
+
+        assertEquals("800", planningPage.getPlannedAmountInput(AUTOMATIC_SERVICE));
+        assertEquals("20", planningPage.getPlannedAmountInput(PRODUCT_TO_EDIT));
+        assertEquals("100", planningPage.getPlannedAmountInput(PRODUCT_TO_PURCHASE));
+
+        assertEquals("0.00", planningPage.getSpentAmount(AUTOMATIC_SERVICE));
+        assertEquals("0.00", planningPage.getSpentAmount(PRODUCT_TO_EDIT));
+        assertEquals("0.00", planningPage.getSpentAmount(PRODUCT_TO_PURCHASE));
     }
 
     @Test(
-            dependsOnMethods = "testAddProductToBudgetPlanner",
+            dependsOnMethods = "testAddItemsToBudgetPlanner",
             dataProviderClass = BudgetDataProvider.class,
             dataProvider = "updateScenarios"
     )
     public void testUpdateBudgetItem(double price, String expectedMessage) {
-        String productName = "Party Hats";
         planningPage.clickPurchasedAndReservedTab();
-        planningPage.updatePlannedAmount(productName, price);
-        planningPage.clickActionButton(productName, BudgetAction.SAVE);
+        planningPage.updatePlannedAmount(PRODUCT_TO_EDIT, price);
+        planningPage.clickActionButton(PRODUCT_TO_EDIT, BudgetAction.SAVE);
 
         assertNotNull(planningPage.findToasterWithMessage(expectedMessage));
     }
@@ -94,43 +96,47 @@ public class BudgetTest extends TestBase {
     @Test(dependsOnMethods = "testUpdateBudgetItem")
     public void testDeleteBudgetItem() {
         planningPage.clickPurchasedAndReservedTab();
-        planningPage.clickActionButton("Party Hats", BudgetAction.DELETE);
+        planningPage.clickActionButton(PRODUCT_TO_EDIT, BudgetAction.DELETE);
 
-        assertNotNull(planningPage.findToasterWithMessage("Party Hats has been deleted successfully!"));
+        assertNotNull(planningPage.findToasterWithMessage(PRODUCT_TO_EDIT  + " has been deleted successfully!"));
     }
 
-    @Test(dependsOnMethods = "testAddProductToBudgetPlanner")
-    public void testPurchaseFromBudget() {
-        String productName = "Decorative Balloons";
+    @Test(dependsOnMethods = "testAddItemsToBudgetPlanner")
+    public void testPurchaseFromBudgetPlanner() {
         planningPage.clickPurchasedAndReservedTab();
-        planningPage.clickActionButton(productName, BudgetAction.PURCHASE);
-        assertEquals("Purchased", planningPage.getItemStatus(productName));
-        assertEquals("0.72", planningPage.getSpentAmount(productName));
+        planningPage.clickActionButton(PRODUCT_TO_PURCHASE, BudgetAction.PURCHASE);
+        assertEquals("Purchased", planningPage.getItemStatus(PRODUCT_TO_PURCHASE));
+        assertEquals("4.00", planningPage.getSpentAmount(PRODUCT_TO_PURCHASE));
+    }
+
+    @Test(dependsOnMethods = "testAddItemsToBudgetPlanner")
+    public void testReserveServiceFromBudgetPlanner() {
+
+    }
+
+    @Test(dependsOnMethods = "testAddItemsToBudgetPlanner")
+    public void testReserveServiceFromBudget() {
+        planningPage.clickPlannerTab();
     }
 
     @Test(dependsOnMethods = "testDeleteBudgetItem", groups = "budget")
     public void testPurchaseProductFromBudget() {
-        String productName = "Event Mugs";
         planningPage.clickPlannerTab();
-        planningPage.search("Guest Management", 10);
-        planningPage.clickSeeMoreButton(productName, ProductDetailsPage.class).clickPurchaseForBudget();
+        planningPage.search(CATEGORY_DECORATION, 10);
+        planningPage.clickSeeMoreButton(PRODUCT_TO_EDIT).clickPurchaseForBudget();
         planningPage.clickPurchasedAndReservedTab();
 
-        assertTrue(planningPage.findNameInTable(productName).isPresent());
-        assertEquals("Purchased", planningPage.getItemStatus(productName));
+        assertTrue(planningPage.findNameInTable(PRODUCT_TO_EDIT).isPresent());
+        assertEquals("Purchased", planningPage.getItemStatus(PRODUCT_TO_EDIT));
     }
 
-    @Test(
-            dataProviderClass = BudgetDataProvider.class,
-            dataProvider = "purchaseScenarios",
-            dependsOnMethods = "testPurchaseProductFromBudget"
-    )
-    public void testPurchaseProduct(String productName, String eventName, double price, String expectedMessage) {
-        ProductOverviewPage overviewPage = planningPage.clickHome().clickSeeMoreProducts();
-        ProductDetailsPage detailsPage = overviewPage.clickSeeMoreButton(productName);
+    private void addToPlanner(String categoryName, String solutionName, double plannedAmount) {
+        planningPage.search(categoryName, plannedAmount);
+        planningPage.clickSeeMoreButton(solutionName).clickAddToPlanner();
+        planningPage.clickPlannerTab();
+    }
 
-        detailsPage.purchaseProduct(eventName, price);
-
-        assertNotNull(planningPage.findToasterWithMessage(expectedMessage));
+    private String getFutureDate() {
+        return LocalDate.now().plusDays(30).format(DateTimeFormatter.ofPattern("M/d/yyyy"));
     }
 }

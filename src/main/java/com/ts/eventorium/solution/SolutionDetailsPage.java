@@ -11,7 +11,7 @@ import java.util.Optional;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
-public class ProductDetailsPage extends HomePage {
+public class SolutionDetailsPage extends HomePage {
 
     private final By purchaseButton = By.xpath("//button[.//span[contains(text(), 'Purchase')]]");
     private final By eventSelect = By.xpath("//mat-select[@formcontrolname='event']");
@@ -48,7 +48,9 @@ public class ProductDetailsPage extends HomePage {
     }
 
     public BudgetPlanningPage clickAddToPlanner() {
-        waitUntil(elementToBeClickable(addToPlannerButton)).click();
+        WebElement button = waitUntil(elementToBeClickable(addToPlannerButton));
+        scrollTo(button);
+        button.click();
         return PageFactory.initElements(driver, BudgetPlanningPage.class);
     }
 

@@ -24,13 +24,13 @@ public class ProductOverviewPage extends HomePage {
     private static final String CARD_NAME_PATTERN = "//app-product-card[.//mat-card-title[text()='%s']]";
     private static final String SEE_MORE_BUTTON_PATTERN = "//app-product-card[.//mat-card-title[text()='%s']]//button";
 
-    public ProductDetailsPage clickSeeMoreButton(String productName) {
+    public SolutionDetailsPage clickSeeMoreButton(String productName) {
         By xpath = By.xpath(String.format(SEE_MORE_BUTTON_PATTERN, productName));
         WebElement button = waitUntil(elementToBeClickable(xpath));
 
         scrollTo(button);
         button.click();
-        return PageFactory.initElements(driver, ProductDetailsPage.class);
+        return PageFactory.initElements(driver, SolutionDetailsPage.class);
     }
 
     public List<WebElement> findProductCards() {
