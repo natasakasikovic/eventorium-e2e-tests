@@ -46,7 +46,7 @@ public class EventTest extends TestBase {
     @Test(groups = "event", dependsOnMethods = "testValidEventDateAllowsProceeding")
     public void testAgendaPageLoadsSuccessfully() {
         createAgendaPage = budgetPlanningPage.clickAgendaCreationButton();
-        assertNotNull(createAgendaPage.findActivityForm());
+        assertTrue(createAgendaPage.findActivityForm().isPresent());
     }
 
     @Test(groups = "event", dependsOnMethods = "testAgendaPageLoadsSuccessfully")
@@ -64,7 +64,7 @@ public class EventTest extends TestBase {
         createAgendaPage.finishAgenda();
 
         String expectedError = "Invalid time range for activity 'Main activity': end time (13:00) must be after start time (14:00).";
-        assertNotNull(createAgendaPage.findDialog(expectedError));
+        assertTrue(createAgendaPage.findDialog(expectedError).isPresent());
         createAgendaPage.closeDialog();
     }
 
@@ -73,7 +73,7 @@ public class EventTest extends TestBase {
         createAgendaPage.removeActivityByName("Main activity");
         homePage = createAgendaPage.finishAgenda();
 
-        assertNotNull(createAgendaPage.findDialog("Event created successfully!"));
+        assertTrue(createAgendaPage.findDialog("Event created successfully!").isPresent());
         createAgendaPage.closeDialog();
         assertNotNull(homePage);
     }

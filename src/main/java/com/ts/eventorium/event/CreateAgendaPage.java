@@ -3,15 +3,12 @@ package com.ts.eventorium.event;
 import com.ts.eventorium.auth.OrganizerPage;
 import com.ts.eventorium.home.HomePage;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class CreateAgendaPage extends OrganizerPage {

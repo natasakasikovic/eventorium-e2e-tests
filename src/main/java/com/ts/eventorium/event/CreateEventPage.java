@@ -4,7 +4,6 @@ import com.ts.eventorium.auth.OrganizerPage;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class CreateEventPage extends OrganizerPage {
 

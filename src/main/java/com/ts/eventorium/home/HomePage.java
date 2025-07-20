@@ -86,13 +86,10 @@ public class HomePage extends PageBase {
         return findElement(By.xpath(String.format(DRAWER_OPTION_PATTERN, option)));
     }
 
-    public WebElement findDialog(String expectedMessage) {
+    public Optional<WebElement> findDialog(String expectedMessage) {
         String path = "//mat-dialog-content[contains(@class, 'custom-dialog-content')]";
-        WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath(path)
-        ));
-        if (messageElement.getText().contains(expectedMessage)) return messageElement;
-        return null;
+        WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)));
+        return messageElement.getText().contains(expectedMessage) ? Optional.of(messageElement) : Optional.empty();
     }
 
     public void closeDialog() {
