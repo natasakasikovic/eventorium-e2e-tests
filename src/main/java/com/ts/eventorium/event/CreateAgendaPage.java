@@ -82,16 +82,10 @@ public class CreateAgendaPage extends OrganizerPage {
     }
 
     public void removeActivityByName(String activityName) {
-        List<WebElement> rows = driver.findElements(By.cssSelector("table[mat-table] tr"));
+        String xpath = "//table[@mat-table]//tr[.//td[contains(text(), '" + activityName + "')]]//button[@mat-icon-button]";
 
-        for (WebElement row : rows) {
-            if (row.getText().contains(activityName)) {
-                row.findElement(By.cssSelector("button[mat-icon-button]")).click();
-                return;
-            }
-        }
-
-        throw new NoSuchElementException("Activity with name '" + activityName + "' not found.");
+        WebElement button = driver.findElement(By.xpath(xpath));
+        button.click();
     }
 
     public WebElement findDialog(String expectedMessage) {
