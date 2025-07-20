@@ -69,7 +69,12 @@ public class CreateAgendaPage extends OrganizerPage {
     }
 
     public boolean isActivityAdded(String activityName) {
-        return agendaTable.getText().contains(activityName);
+        // The newly added activity always appears as the last row in the table
+        WebElement lastRow = waitUntil(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//table[@mat-table]//tr[td][last()]")
+        ));
+        WebElement firstCell = lastRow.findElement(By.xpath("td[1]"));
+        return firstCell.getText().equals(activityName);
     }
 
     public HomePage finishAgenda() {

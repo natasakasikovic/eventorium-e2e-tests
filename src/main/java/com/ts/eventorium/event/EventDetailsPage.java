@@ -15,7 +15,7 @@ public class EventDetailsPage extends HomePage {
 
     public void waitForPdf() {
         long startTime = System.currentTimeMillis();
-        waitUntil(driver -> System.currentTimeMillis() - startTime >= 3000, 4);
+        waitUntil(driver -> System.currentTimeMillis() - startTime >= 2000, 3);
     }
 
 }
