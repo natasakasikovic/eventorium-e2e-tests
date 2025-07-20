@@ -1,12 +1,15 @@
 package com.ts.eventorium.home;
 
 import com.ts.eventorium.auth.LoginPage;
+import com.ts.eventorium.event.EventOverviewPage;
 import com.ts.eventorium.solution.ProductOverviewPage;
 import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.Optional;
 
@@ -50,8 +53,9 @@ public class HomePage extends PageBase {
         clickSeeMoreContentButton("service");
     }
 
-    public void clickSeeMoreEvents() {
+    public EventOverviewPage clickSeeMoreEvents() {
         clickSeeMoreContentButton("event");
+        return PageFactory.initElements(driver, EventOverviewPage.class);
     }
 
     private void clickSeeMoreContentButton(String option) {
@@ -80,6 +84,17 @@ public class HomePage extends PageBase {
         waitUntil(visibilityOfElementLocated(drawer));
 
         return findElement(By.xpath(String.format(DRAWER_OPTION_PATTERN, option)));
+    }
+
+    public Optional<WebElement> findDialog(String expectedMessage) {
+        String path = "//mat-dialog-content[contains(@class, 'custom-dialog-content')]";
+        WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)));
+        return messageElement.getText().contains(expectedMessage) ? Optional.of(messageElement) : Optional.empty();
+    }
+
+    public void closeDialog() {
+        WebElement overlay = driver.findElement(By.cssSelector(".cdk-overlay-backdrop"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", overlay);
     }
 
 }

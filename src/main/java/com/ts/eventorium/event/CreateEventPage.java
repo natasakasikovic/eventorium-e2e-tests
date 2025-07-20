@@ -1,12 +1,11 @@
 package com.ts.eventorium.event;
 
-import com.ts.eventorium.util.PageBase;
-import org.openqa.selenium.WebElement;
+import com.ts.eventorium.auth.OrganizerPage;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-
-public class CreateEventPage extends PageBase {
+public class CreateEventPage extends OrganizerPage {
 
     @FindBy(css = "#eventTypeSelect")
     private WebElement eventTypeSelect;
@@ -59,6 +58,8 @@ public class CreateEventPage extends PageBase {
     }
 
     public void setEventDate(String eventDate) {
+        eventDateInput.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        eventDateInput.sendKeys(Keys.DELETE);
         eventDateInput.sendKeys(eventDate);
     }
 
@@ -73,5 +74,4 @@ public class CreateEventPage extends PageBase {
     public void selectCity(String city) {
         selectOption(citySelect, city, OPTION_PATTERN);
     }
-
 }

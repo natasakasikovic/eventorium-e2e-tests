@@ -37,6 +37,9 @@ public class BudgetPlanningPage extends OrganizerPage {
     @FindBy(xpath = "//mat-icon[text() = 'add-circle']/..")
     private WebElement addCategoryButton;
 
+    @FindBy(id = "submit")
+    private WebElement agendaCreationButton;
+
     private final By categoryTabs = By.xpath("(//div[@role='tablist'])[2]/div/div[@role='tab']");
     private final By categoryPanel = By.xpath("//div[@role='listbox']/..");
     private final By options = By.xpath("//mat-option/span");
@@ -53,6 +56,12 @@ public class BudgetPlanningPage extends OrganizerPage {
     private static final String TABLE_NAME_PATTERN = "(//tbody/tr/td[1])[text()='%s']";
     private static final String TABLE_CATEGORY_PATTERN = "(//tbody/tr/td[2])[text()='%s']";
     private static final String TABLE_SPENT_AMOUNT = "(//tbody/tr/td[3])[text()='%s']";
+
+    public CreateAgendaPage clickAgendaCreationButton() {
+        waitUntil(ExpectedConditions.visibilityOf(agendaCreationButton));
+        agendaCreationButton.click();
+        return PageFactory.initElements(driver, CreateAgendaPage.class);
+    }
 
     public void selectCategory(String name) {
         findTabCategory(name).ifPresent(element -> {
