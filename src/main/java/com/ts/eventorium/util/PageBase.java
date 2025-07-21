@@ -94,9 +94,8 @@ public abstract class PageBase {
     }
 
     public String waitForNonEmptyText(By locator) {
-        WebDriverWait wait = new WebDriverWait(driver, 5);
         try {
-            return wait.until(d -> {
+            return waitUntil(d -> {
                 WebElement element = driver.findElement(locator);
                 String text = element.getText().trim();
                 return (!text.isEmpty()) ? text : null;

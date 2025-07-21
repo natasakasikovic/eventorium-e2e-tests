@@ -102,7 +102,7 @@ public class BudgetTest extends TestBase {
     public void testPurchaseFromBudgetPlanner() {
         planningPage.clickPurchasedAndReservedTab();
         planningPage.clickActionButton(PRODUCT_TO_PURCHASE, BudgetAction.PURCHASE);
-        assertEquals("Purchased", planningPage.getItemStatus(PRODUCT_TO_PURCHASE));
+        assertTrue(planningPage.checkItemStatus(PRODUCT_TO_PURCHASE, "Purchased"));
         assertEquals("4.00", planningPage.getSpentAmount(PRODUCT_TO_PURCHASE));
     }
 
@@ -112,7 +112,7 @@ public class BudgetTest extends TestBase {
         planningPage.clickActionButton(AUTOMATIC_SERVICE, BudgetAction.RESERVE);
         planningPage.makeReservation("01:00 PM", "03:00 PM");
 
-        assertEquals("Reserved", planningPage.getItemStatus(AUTOMATIC_SERVICE));
+        assertTrue(planningPage.checkItemStatus(AUTOMATIC_SERVICE, "Reserved"));
         assertEquals("800.00", planningPage.getPlannedAmount(AUTOMATIC_SERVICE));
         assertEquals("720.00", planningPage.getSpentAmount(AUTOMATIC_SERVICE));
     }
@@ -126,7 +126,7 @@ public class BudgetTest extends TestBase {
         detailsPage.makeReservation("07:00 AM", "01:00 PM");
         planningPage.clickPurchasedAndReservedTab();
 
-        assertEquals("Pending", planningPage.getItemStatus(MANUAL_SERVICE));
+        assertTrue(planningPage.checkItemStatus(MANUAL_SERVICE, "Pending"));
         assertEquals("1000", planningPage.getPlannedAmountInput(MANUAL_SERVICE));
         assertEquals("0.00", planningPage.getSpentAmount(MANUAL_SERVICE));
     }
@@ -139,7 +139,7 @@ public class BudgetTest extends TestBase {
         planningPage.clickPurchasedAndReservedTab();
 
         assertTrue(planningPage.findNameInTable(PRODUCT_TO_EDIT).isPresent());
-        assertEquals("Purchased", planningPage.getItemStatus(PRODUCT_TO_EDIT));
+        assertTrue(planningPage.checkItemStatus(PRODUCT_TO_EDIT, "Purchased"));
     }
 
     private void addToPlanner(String categoryName, String solutionName, double plannedAmount) {

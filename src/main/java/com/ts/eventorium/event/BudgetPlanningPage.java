@@ -10,7 +10,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 import java.util.Optional;
@@ -134,11 +133,10 @@ public class BudgetPlanningPage extends OrganizerPage {
     }
 
     public void setPlannedAmount(String categoryName, String plannedAmount)  {
-        WebDriverWait wait = new WebDriverWait(driver, 5);
         By plannedAmountInput = By.id(categoryName + "-plannedInput");
-        WebElement inputElement = wait.until(ExpectedConditions.visibilityOfElementLocated(plannedAmountInput));
+        WebElement inputElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(plannedAmountInput));
 
-        wait.until(elementToBeClickable(inputElement));
+        waitUntil(elementToBeClickable(inputElement));
         set(plannedAmountInput, plannedAmount);
     }
 
@@ -155,8 +153,8 @@ public class BudgetPlanningPage extends OrganizerPage {
         return findElement(By.xpath(String.format(TABLE_NAME_PATTERN, name)));
     }
 
-    public String getItemStatus(String itemName) {
-        return getCellValue(itemName, TABLE_STATUS_PATTERN);
+    public boolean checkItemStatus(String itemName, String expectedStatus) {
+        return waitForStatus(itemName, TABLE_STATUS_PATTERN, expectedStatus);
     }
 
     public String getCategory(String itemName) {
@@ -206,5 +204,18 @@ public class BudgetPlanningPage extends OrganizerPage {
     private List<WebElement> findSuggestions() {
         waitUntil(ExpectedConditions.visibilityOfElementLocated(suggestions));
         return findElements(suggestions);
+    }
+
+    public boolean waitForStatus(String itemName, String pattern, String expectedStatus) {
+        String xpath = String.format(pattern, itemName);
+        try {
+            return waitUntil(driver -> {
+                WebElement element = driver.findElement(By.xpath(xpath));
+                String text = element.getText().trim();
+                return expectedStatus.equals(text);
+            });
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
 }

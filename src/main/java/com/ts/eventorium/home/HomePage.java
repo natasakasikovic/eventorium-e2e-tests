@@ -74,10 +74,6 @@ public class HomePage extends PageBase {
         return waitUntil(visibilityOfElementLocated(By.xpath(xpath)));
     }
 
-    public Optional<WebElement> findToaster() {
-        return findElement(toaster);
-    }
-
     protected <T extends HomePage> T clickHome(Class<T> pageClass) {
         findDrawerOption("Home").ifPresent(WebElement::click);
         return PageFactory.initElements(driver, pageClass);

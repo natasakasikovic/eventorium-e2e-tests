@@ -1,12 +1,13 @@
 package com.ts.eventorium.solution;
 
+import com.ts.eventorium.home.HomePage;
 import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public class ReservationDialog extends PageBase {
+public class ReservationDialog extends HomePage {
 
     private final By fromInput = By.cssSelector("input[formcontrolname='startingTime']");
     private final By toInput = By.cssSelector("input[formcontrolname='endingTime']");
@@ -28,8 +29,8 @@ public class ReservationDialog extends PageBase {
 
     public void clickReserve() {
         waitUntil(ExpectedConditions.elementToBeClickable(reserveButton)).click();
-        findElement(By.cssSelector("body")).ifPresent(element -> element.sendKeys(Keys.ESCAPE));
-        findElement(By.cssSelector("body")).ifPresent(element -> element.sendKeys(Keys.ESCAPE));
+        findDialog("Success");
+        closeDialog();
     }
 
     public void reserveService(String fromTime, String toTime) {
