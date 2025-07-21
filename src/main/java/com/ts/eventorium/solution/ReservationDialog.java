@@ -29,6 +29,7 @@ public class ReservationDialog extends PageBase {
     public void clickReserve() {
         waitUntil(ExpectedConditions.elementToBeClickable(reserveButton)).click();
         findElement(By.cssSelector("body")).ifPresent(element -> element.sendKeys(Keys.ESCAPE));
+        findElement(By.cssSelector("body")).ifPresent(element -> element.sendKeys(Keys.ESCAPE));
     }
 
     public void reserveService(String fromTime, String toTime) {

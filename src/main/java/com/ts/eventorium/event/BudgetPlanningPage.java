@@ -5,6 +5,7 @@ import com.ts.eventorium.solution.ReservationDialog;
 import com.ts.eventorium.solution.SolutionDetailsPage;
 import com.ts.eventorium.util.BudgetAction;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -58,9 +59,9 @@ public class BudgetPlanningPage extends OrganizerPage {
     private static final String TABLE_STATUS_PATTERN = "//tr[td[contains(., '%s')]]//mat-chip//span[contains(@class, 'mdc-evolution-chip__text-label')]";
     private static final String TABLE_NAME_PATTERN = "(//tbody/tr/td[1])[text()='%s']";
     private static final String TABLE_CATEGORY_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[2]";
-    private static final String TABLE_SPENT_AMOUNT = "//tbody/tr[td[1][text()='%s']]/td[3]";
-    private static final String TABLE_PLANNED_AMOUNT = "//tbody/tr[td[1][text()='%s']]/td[4]";
-    private static final String TABLE_PLANNED_AMOUNT_INPUT = "//tbody/tr[td[1][text()='%s']]/td[4]/input";
+    private static final String TABLE_SPENT_AMOUNT_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[3]";
+    private static final String TABLE_PLANNED_AMOUNT_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[4]";
+    private static final String TABLE_PLANNED_AMOUNT_INPUT_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[4]/input";
     private static final String TABLE_ACTION_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[6]//button[.//mat-icon[text()='%s']]";
 
     public CreateAgendaPage clickAgendaCreationButton() {
@@ -158,23 +159,27 @@ public class BudgetPlanningPage extends OrganizerPage {
         return getCellValue(itemName, TABLE_STATUS_PATTERN);
     }
 
+    public String getCategory(String itemName) {
+        return getCellValue(itemName, TABLE_CATEGORY_PATTERN);
+    }
+
     public String getSpentAmount(String itemName) {
-        return getCellValue(itemName, TABLE_SPENT_AMOUNT);
+        return getCellValue(itemName, TABLE_SPENT_AMOUNT_PATTERN);
     }
 
     public String getPlannedAmount(String itemName) {
-        return getCellValue(itemName, TABLE_PLANNED_AMOUNT);
+        return getCellValue(itemName, TABLE_PLANNED_AMOUNT_PATTERN);
     }
 
     public String getPlannedAmountInput(String itemName) {
         waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
-        String xpath = String.format(TABLE_PLANNED_AMOUNT_INPUT, itemName);
+        String xpath = String.format(TABLE_PLANNED_AMOUNT_INPUT_PATTERN, itemName);
         return getInputValue(By.xpath(xpath));
     }
 
     public void updatePlannedAmount(String itemName, double newPrice) {
         waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
-        String xpath = String.format(TABLE_PLANNED_AMOUNT_INPUT, itemName);
+        String xpath = String.format(TABLE_PLANNED_AMOUNT_INPUT_PATTERN, itemName);
         set(By.xpath(xpath), String.valueOf(newPrice));
     }
 
@@ -188,11 +193,8 @@ public class BudgetPlanningPage extends OrganizerPage {
     }
 
     private String getCellValue(String itemName, String pattern) {
-        waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
-        Optional<WebElement> statusElement = findElement(By.xpath(String.format(pattern, itemName)));
-        return statusElement
-                .map(WebElement::getText)
-                .orElse("Not found");
+        String xpath = String.format(pattern, itemName);
+        return waitForNonEmptyText(By.xpath(xpath));
     }
 
     private Optional<WebElement> findNewCategory(String name) {
