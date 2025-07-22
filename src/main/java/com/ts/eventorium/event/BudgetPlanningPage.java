@@ -70,6 +70,7 @@ public class BudgetPlanningPage extends OrganizerPage {
     }
 
     public void selectCategory(String name) {
+        waitUntil(ExpectedConditions.visibilityOf(budgetItems));
         findTabCategory(name).ifPresent(element -> {
             element.click();
             waitUntil(elementToBeClickable(By.id(name + "-plannedInput")));
@@ -77,6 +78,7 @@ public class BudgetPlanningPage extends OrganizerPage {
     }
 
     public void removeCategory(String name) {
+        waitUntil(ExpectedConditions.visibilityOf(budgetItems));
         findTabCategory(name).ifPresent(element -> {
             element.click();
             waitUntil(elementToBeClickable(deleteButton)).click();

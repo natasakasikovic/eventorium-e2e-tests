@@ -32,6 +32,8 @@ public class EventOverviewPage extends HomePage {
     }
 
     public void search(String eventName) {
+        waitUntil(ExpectedConditions.visibilityOf(searchBox));
+        searchBox.clear();
         searchBox.sendKeys(eventName);
         searchBox.sendKeys(Keys.ENTER);
     }

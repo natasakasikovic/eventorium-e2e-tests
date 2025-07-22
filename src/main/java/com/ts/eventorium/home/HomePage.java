@@ -53,10 +53,6 @@ public class HomePage extends PageBase {
         return PageFactory.initElements(driver, ProductOverviewPage.class);
     }
 
-    public void clickSeeMoreServices() {
-        clickSeeMoreContentButton("service");
-    }
-
     public EventOverviewPage clickSeeMoreEvents() {
         clickSeeMoreContentButton("event");
         return PageFactory.initElements(driver, EventOverviewPage.class);
