@@ -30,9 +30,6 @@ public class CreateAgendaPage extends OrganizerPage {
     @FindBy(css = ".add-button button")
     private WebElement addActivityButton;
 
-    @FindBy(css = "table[mat-table]")
-    private WebElement agendaTable;
-
     @FindBy(css = ".finish-button")
     private WebElement finishButton;
 
@@ -88,5 +85,6 @@ public class CreateAgendaPage extends OrganizerPage {
 
         WebElement button = waitUntil(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
         button.click();
+        waitUntil(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//table[@mat-table]//tr[.//td[contains(text(), '" + activityName + "')]]")));
     }
 }

@@ -5,6 +5,7 @@ import com.ts.eventorium.event.EventOverviewPage;
 import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -73,12 +74,21 @@ public class HomePage extends PageBase {
 
     public Optional<WebElement> findDialog(String expectedMessage) {
         String path = "//mat-dialog-content[contains(@class, 'custom-dialog-content')]";
-        WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)));
-        return messageElement.getText().contains(expectedMessage) ? Optional.of(messageElement) : Optional.empty();
+
+        try {
+            WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)), 10);
+            boolean textMatches = waitUntil(driver -> messageElement.getText().contains(expectedMessage));
+            if (textMatches) return Optional.of(messageElement);
+             else return Optional.empty();
+
+        } catch (TimeoutException e) {
+            return Optional.empty();
+        }
     }
 
     public void closeDialog() {
-        WebElement overlay = driver.findElement(By.cssSelector(".cdk-overlay-backdrop"));
+        WebElement overlay = waitUntil(ExpectedConditions.elementToBeClickable(By.cssSelector(".cdk-overlay-backdrop")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", overlay);
     }
+
 }
