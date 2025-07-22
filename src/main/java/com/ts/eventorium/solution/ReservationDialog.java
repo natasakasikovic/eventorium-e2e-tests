@@ -1,7 +1,6 @@
 package com.ts.eventorium.solution;
 
 import com.ts.eventorium.home.HomePage;
-import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;

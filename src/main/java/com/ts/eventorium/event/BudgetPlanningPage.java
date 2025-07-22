@@ -1,9 +1,9 @@
 package com.ts.eventorium.event;
 
 import com.ts.eventorium.auth.OrganizerPage;
+import com.ts.eventorium.event.util.BudgetAction;
 import com.ts.eventorium.solution.ReservationDialog;
 import com.ts.eventorium.solution.SolutionDetailsPage;
-import com.ts.eventorium.util.BudgetAction;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;

@@ -2,18 +2,14 @@ package com.ts.eventorium.home;
 
 import com.ts.eventorium.auth.LoginPage;
 import com.ts.eventorium.event.EventOverviewPage;
-import com.ts.eventorium.solution.ProductOverviewPage;
 import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
@@ -31,12 +27,10 @@ public class HomePage extends PageBase {
 
     private final By drawer = By.xpath("//mat-sidenav-container/div[contains(@class, 'mat-drawer-shown')]");
     private final By logoutButton = By.xpath("//button/span[text()='LogOut']/..");
-    private final By toaster = By.cssSelector(".toast-top-right");
 
     private static final String DRAWER_OPTION_PATTERN = "//mat-nav-list/mat-list-item[.//span[text()='%s']]";
     private static final String SEE_MORE_CONTENT_PATTERN = "//h1[contains(text(), '%s')]/ancestor::div[@class='cards-screen']//div[@class='see-more']/button";
     private static final String TOASTER_MESSAGE_PATTERN = "//div[contains(@class, 'toast-message') and contains(text(), '%s')]";
-    private static final String TOASTER_PATTERN = "//div[contains(@class, 'toast-message')]";
 
     public LoginPage clickLoginButton() {
         loginButton.click();
@@ -46,11 +40,6 @@ public class HomePage extends PageBase {
     public HomePage clickLogout() {
         findElement(logoutButton).ifPresent(WebElement::click);
         return PageFactory.initElements(driver, HomePage.class);
-    }
-
-    public ProductOverviewPage clickSeeMoreProducts() {
-        clickSeeMoreContentButton("product");
-        return PageFactory.initElements(driver, ProductOverviewPage.class);
     }
 
     public EventOverviewPage clickSeeMoreEvents() {

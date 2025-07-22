@@ -1,4 +1,4 @@
-package com.ts.eventorium.util;
+package com.ts.eventorium.event.util;
 
 public enum BudgetAction {
     SAVE("save"),

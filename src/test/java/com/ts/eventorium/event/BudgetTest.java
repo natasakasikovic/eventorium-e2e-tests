@@ -1,8 +1,8 @@
 package com.ts.eventorium.event;
 
-import com.ts.eventorium.solution.SolutionDetailsPage;
+import com.ts.eventorium.event.util.BudgetAction;
 import com.ts.eventorium.providers.BudgetDataProvider;
-import com.ts.eventorium.util.BudgetAction;
+import com.ts.eventorium.solution.SolutionDetailsPage;
 import com.ts.eventorium.util.TestBase;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.BeforeClass;

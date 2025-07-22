@@ -8,7 +8,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public abstract class PageBase {
 
@@ -67,10 +66,6 @@ public abstract class PageBase {
                 ((JavascriptExecutor) driver).executeScript("arguments[0].click();", button);
             }
         });
-    }
-
-    protected void waitFor(long time, TimeUnit unit) {
-        driver.manage().timeouts().implicitlyWait(time, unit);
     }
 
     protected void selectOption(WebElement matSelect, String option, String optionPattern) {
