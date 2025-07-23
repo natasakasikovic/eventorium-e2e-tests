@@ -20,7 +20,8 @@ public class EventOverviewPage extends HomePage {
 
     private static final String CARD_NAME_PATTERN = "//app-event-card[.//mat-card-title[text()='%s']]";
     private static final String SEE_MORE_BUTTON_PATTERN = "//app-event-card[.//mat-card-title[text()='%s']]//button";
-    private final By EVENT_CARD_PATTERN = By.xpath("//app-event-card");
+
+    private static final By eventCards = By.xpath("//app-event-card");
 
     public Optional<WebElement> findCard(String eventName) {
         String xpath = String.format(CARD_NAME_PATTERN, eventName);
@@ -33,8 +34,8 @@ public class EventOverviewPage extends HomePage {
     }
 
     public List<WebElement> getAllEventCards() {
-        waitUntil(ExpectedConditions.visibilityOfElementLocated(EVENT_CARD_PATTERN));
-        return findElements(EVENT_CARD_PATTERN);
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(eventCards));
+        return findElements(eventCards);
     }
 
     public List<String> getAllEventTitles() {
