@@ -9,6 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
@@ -19,7 +20,7 @@ public class EventOverviewPage extends HomePage {
 
     private static final String CARD_NAME_PATTERN = "//app-event-card[.//mat-card-title[text()='%s']]";
     private static final String SEE_MORE_BUTTON_PATTERN = "//app-event-card[.//mat-card-title[text()='%s']]//button";
-
+    private final By EVENT_CARD_PATTERN = By.xpath("//app-event-card");
 
     public Optional<WebElement> findCard(String eventName) {
         String xpath = String.format(CARD_NAME_PATTERN, eventName);
@@ -29,6 +30,15 @@ public class EventOverviewPage extends HomePage {
         } catch (TimeoutException e) {
             return Optional.empty();
         }
+    }
+
+    public List<WebElement> getAllEventCards() {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(EVENT_CARD_PATTERN));
+        return findElements(EVENT_CARD_PATTERN);
+    }
+
+    public List<String> getAllEventTitles() {
+        return getAllEventCards().stream().map(card -> card.findElement(By.tagName("mat-card-title")).getText()).toList();
     }
 
     public void search(String eventName) {
