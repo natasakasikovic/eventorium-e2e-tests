@@ -1,12 +1,16 @@
 package com.ts.eventorium.event;
 
+import com.ts.eventorium.event.util.EventFilter;
 import com.ts.eventorium.util.TestBase;
 import org.junit.Assert;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 public class EventFilterTest extends TestBase {
 
@@ -26,7 +30,7 @@ public class EventFilterTest extends TestBase {
         Assert.assertEquals(4, titles.size());
 
         for (String title : titles)
-            Assert.assertTrue(title.toLowerCase().contains("sombor"));
+            assertTrue(title.toLowerCase().contains("sombor"));
     }
 
     @Test(groups = "event")
@@ -36,5 +40,16 @@ public class EventFilterTest extends TestBase {
         List<WebElement> elements = eventOverviewPage.getAllEventCards();
 
         Assert.assertEquals(0, elements.size());
+    }
+
+    @Test(groups = "event")
+    public void filterEvents() {
+        EventFilter filter = new EventFilter("Sombor", "conference", "CORPORATE", "Sombor", 100, LocalDate.now().plusDays(90), LocalDate.now().plusDays(110));
+        eventOverviewPage.filter(filter);
+
+        assertTrue(eventOverviewPage.findCard("Sombor").isPresent());
+
+        List<WebElement> events = eventOverviewPage.getAllEventCards();
+        Assert.assertEquals(1, events.size());
     }
 }

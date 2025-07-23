@@ -1,5 +1,6 @@
 package com.ts.eventorium.event;
 
+import com.ts.eventorium.event.util.EventFilter;
 import com.ts.eventorium.home.HomePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -16,8 +17,12 @@ import java.util.Optional;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 
 public class EventOverviewPage extends HomePage {
+
     @FindBy(xpath = "//app-search-bar//input")
     private WebElement searchBox;
+
+    @FindBy(xpath = "//button[contains(@class, 'filter-button')]")
+    private WebElement filterButton;
 
     private static final String CARD_NAME_PATTERN = "//app-event-card[.//mat-card-title[text()='%s']]";
     private static final String SEE_MORE_BUTTON_PATTERN = "//app-event-card[.//mat-card-title[text()='%s']]//button";
@@ -51,6 +56,12 @@ public class EventOverviewPage extends HomePage {
         searchBox.clear();
         searchBox.sendKeys(eventName);
         searchBox.sendKeys(Keys.ENTER);
+    }
+
+    public void filter(EventFilter filter) {
+        filterButton.click();
+        EventFilterDialogPage filterDialog = new EventFilterDialogPage();
+        filterDialog.filter(filter);
     }
 
     public EventDetailsPage clickSeeMoreButton(String eventName) {
