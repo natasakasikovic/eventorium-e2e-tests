@@ -9,6 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,8 +35,12 @@ public class EventOverviewPage extends HomePage {
     }
 
     public List<WebElement> getAllEventCards() {
-        waitUntil(ExpectedConditions.visibilityOfElementLocated(eventCards));
-        return findElements(eventCards);
+        try {
+            waitUntil(ExpectedConditions.visibilityOfElementLocated(eventCards));
+            return findElements(eventCards);
+        } catch (TimeoutException e) {
+            return Collections.emptyList();
+        }
     }
 
     public List<String> getAllEventTitles() {
@@ -43,6 +48,7 @@ public class EventOverviewPage extends HomePage {
     }
 
     public void search(String eventName) {
+        searchBox.clear();
         searchBox.sendKeys(eventName);
         searchBox.sendKeys(Keys.ENTER);
     }

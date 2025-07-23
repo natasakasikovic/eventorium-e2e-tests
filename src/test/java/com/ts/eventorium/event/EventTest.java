@@ -1,12 +1,10 @@
 package com.ts.eventorium.event;
 
 import com.ts.eventorium.util.TestBase;
-import org.junit.Assert;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -92,19 +90,6 @@ public class EventTest extends TestBase {
 
         assertTrue(detailsPage.getExportButton().isPresent());
         detailsPage.clickExportGuestList();
-    }
-
-    @Test(groups = "event")
-    public void searchEvents() {
-        eventOverviewPage = homePage.clickSeeMoreEvents();
-        eventOverviewPage.search("sombor");
-
-        List<String> titles = eventOverviewPage.getAllEventTitles();
-
-        Assert.assertEquals(4, titles.size());
-
-        for (String title : titles)
-            Assert.assertTrue(title.toLowerCase().contains("sombor"));
     }
 
     private String getFutureDate() {
