@@ -4,12 +4,19 @@ import com.ts.eventorium.home.HomePage;
 import org.openqa.selenium.By;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 public class SolutionDetailsPage extends HomePage {
 
     private final By purchaseButton = By.xpath("//button[.//span[contains(text(), 'Purchase')]]");
     private final By reserveButton = By.xpath("//button[.//span[contains(text(), 'Reserve')]]");
     private final By addToPlannerButton = By.xpath("//button[.//span[contains(text(), 'Add to planner')]]");
+    private final By solutionName = By.xpath("//mat-card-title");
+
+    public String getSolutionName() {
+        String fullText = waitUntil(visibilityOfElementLocated(solutionName)).getText().trim();
+        return fullText.replace("chat", "").trim();
+    }
 
     public void clickPurchaseForBudget() {
         waitUntil(elementToBeClickable(purchaseButton));

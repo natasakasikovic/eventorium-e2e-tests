@@ -76,8 +76,11 @@ public class HomePage extends PageBase {
         String path = "//mat-dialog-content[contains(@class, 'custom-dialog-content')]";
 
         try {
-            WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)), 10);
-            boolean textMatches = waitUntil(driver -> messageElement.getText().contains(expectedMessage));
+            WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)));
+            boolean textMatches = waitUntil(driver -> {
+                String message = messageElement.getText();
+                return message.contains(expectedMessage);
+            });
             if (textMatches) return Optional.of(messageElement);
              else return Optional.empty();
 

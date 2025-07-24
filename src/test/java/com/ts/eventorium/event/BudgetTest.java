@@ -144,8 +144,9 @@ public class BudgetTest extends TestBase {
 
     private void addToPlanner(String categoryName, String solutionName, double plannedAmount) {
         planningPage.search(categoryName, plannedAmount);
-        planningPage.clickSeeMoreButton(solutionName).clickAddToPlanner();
-        planningPage.clickPlannerTab();
+        SolutionDetailsPage page = planningPage.clickSeeMoreButton(solutionName);
+        assertEquals(solutionName, page.getSolutionName());
+        page.clickAddToPlanner();
     }
 
     private void fillEventForm(CreateEventPage page) {

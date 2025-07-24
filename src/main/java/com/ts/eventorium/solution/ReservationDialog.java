@@ -28,7 +28,7 @@ public class ReservationDialog extends HomePage {
 
     public void clickReserve() {
         waitUntil(ExpectedConditions.elementToBeClickable(reserveButton)).click();
-        findDialog("Success");
+        findDialog("Check your email for more information about the reservation!");
         closeDialog();
     }
 
