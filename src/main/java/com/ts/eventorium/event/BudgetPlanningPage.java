@@ -49,6 +49,8 @@ public class BudgetPlanningPage extends OrganizerPage {
     private final By deleteButton = By.xpath("//mat-icon[text()='delete']/..");
     private final By searchButton = By.xpath("//button[span[text()='Search']]");
     private final By suggestions = By.xpath("//div[@class='cards']/app-budget-suggestion-card");
+    private final By totalSpent = By.xpath("//tfoot/tr/td[3]");
+    private final By totalPlanned = By.xpath("//tfoot/tr/td[4]");
 
     private final By table = By.xpath("//table");
 
@@ -162,6 +164,17 @@ public class BudgetPlanningPage extends OrganizerPage {
     public String getCategory(String itemName) {
         return getCellValue(itemName, TABLE_CATEGORY_PATTERN);
     }
+
+    public String getTotalSpent() {
+        WebElement element =  waitUntil(ExpectedConditions.visibilityOfElementLocated(totalSpent));
+        return element.getText().trim();
+    }
+
+    public String getTotalPlanned() {
+        WebElement element =  waitUntil(ExpectedConditions.visibilityOfElementLocated(totalPlanned));
+        return element.getText().trim();
+    }
+
 
     public String getSpentAmount(String itemName) {
         return getCellValue(itemName, TABLE_SPENT_AMOUNT_PATTERN);

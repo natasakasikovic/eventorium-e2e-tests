@@ -60,6 +60,8 @@ public class BudgetTest extends TestBase {
         assertTrue(planningPage.findNameInTable(AUTOMATIC_SERVICE).isPresent());
         assertEquals("800", planningPage.getPlannedAmountInput(AUTOMATIC_SERVICE));
         assertEquals("0.00", planningPage.getSpentAmount(AUTOMATIC_SERVICE));
+        assertEquals("800.00", planningPage.getTotalPlanned());
+        assertEquals("0.00", planningPage.getTotalSpent());
         assertEquals(CATEGORY_ENTERTAINMENT, planningPage.getCategory(AUTOMATIC_SERVICE));
     }
 
@@ -75,6 +77,8 @@ public class BudgetTest extends TestBase {
 
         assertEquals("20", planningPage.getPlannedAmountInput(PRODUCT_TO_EDIT));
         assertEquals("100", planningPage.getPlannedAmountInput(PRODUCT_TO_PURCHASE));
+        assertEquals("920.00", planningPage.getTotalPlanned());
+        assertEquals("0.00", planningPage.getTotalSpent());
     }
 
     @Test(
