@@ -8,11 +8,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public abstract class PageBase {
 
     protected static WebDriver driver;
+    private static final int TIMEOUT = 7;
 
     public static void setDriver(WebDriver driver) {
         PageBase.driver = driver;
@@ -50,6 +50,12 @@ public abstract class PageBase {
         findElement(locator).ifPresent(WebElement::click);
     }
 
+    protected String getInputValue(By locator) {
+        WebElement input = waitUntil(ExpectedConditions.visibilityOfElementLocated(locator));
+        String value = input.getAttribute("value");
+        return value != null ? value.trim() : "";
+    }
+
     protected void clickJs(By locator) {
         findElement(locator).ifPresent(element ->
                 ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element));
@@ -61,10 +67,6 @@ public abstract class PageBase {
                 ((JavascriptExecutor) driver).executeScript("arguments[0].click();", button);
             }
         });
-    }
-
-    protected void waitFor(long time, TimeUnit unit) {
-        driver.manage().timeouts().implicitlyWait(time, unit);
     }
 
     protected void selectOption(WebElement matSelect, String option, String optionPattern) {
@@ -79,12 +81,24 @@ public abstract class PageBase {
     }
 
     protected <T> T waitUntil(ExpectedCondition<T> condition) {
-        return waitUntil(condition, 5);
+        return waitUntil(condition, TIMEOUT);
     }
 
     protected <T> T waitUntil(ExpectedCondition<T> condition, int seconds) {
         WebDriverWait wait = new WebDriverWait(driver, seconds);
         return wait.until(condition);
+    }
+
+    public String waitForNonEmptyText(By locator) {
+        try {
+            return waitUntil(d -> {
+                WebElement element = driver.findElement(locator);
+                String text = element.getText().trim();
+                return (!text.isEmpty()) ? text : null;
+            });
+        } catch (TimeoutException e) {
+            return "";
+        }
     }
 
 }
