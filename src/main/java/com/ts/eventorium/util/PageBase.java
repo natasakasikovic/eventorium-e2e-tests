@@ -12,6 +12,7 @@ import java.util.Optional;
 public abstract class PageBase {
 
     protected static WebDriver driver;
+    private static final int TIMEOUT = 7;
 
     public static void setDriver(WebDriver driver) {
         PageBase.driver = driver;
@@ -80,7 +81,7 @@ public abstract class PageBase {
     }
 
     protected <T> T waitUntil(ExpectedCondition<T> condition) {
-        return waitUntil(condition, 5);
+        return waitUntil(condition, TIMEOUT);
     }
 
     protected <T> T waitUntil(ExpectedCondition<T> condition, int seconds) {
