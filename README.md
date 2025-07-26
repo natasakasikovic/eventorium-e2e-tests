@@ -117,3 +117,7 @@ These tests interact with the following components of the Eventorium platform. E
 [Selenium-url]: https://www.selenium.dev/
 [ChromeDriver-img]: https://img.shields.io/badge/ChromeDriver-automated--browser--testing-yellow?logo=googlechrome&logoColor=white
 [ChromeDriver-url]: https://chromedriver.chromium.org/
+[contributors-shield]: https://img.shields.io/github/contributors/kzi-nastava/iss-project-event-planner-siit-2024-team-13.svg?style=for-the-badge
+[contributors-url]: https://github.com/kzi-nastava/iss-project-event-planner-siit-2024-team-13/graphs/contributors
+[license-shield]: https://img.shields.io/github/license/kzi-nastava/iss-project-event-planner-siit-2024-team-13.svg?style=for-the-badge
+[license-url]: https://github.com/kzi-nastava/iss-project-event-planner-siit-2024-team-13/blob/master/LICENSE.txt
