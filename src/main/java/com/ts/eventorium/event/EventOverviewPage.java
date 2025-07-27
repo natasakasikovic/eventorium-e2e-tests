@@ -1,5 +1,6 @@
 package com.ts.eventorium.event;
 
+import com.ts.eventorium.event.util.EventFilter;
 import com.ts.eventorium.home.HomePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -9,17 +10,24 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 
 public class EventOverviewPage extends HomePage {
+
     @FindBy(xpath = "//app-search-bar//input")
     private WebElement searchBox;
+
+    @FindBy(xpath = "//button[contains(@class, 'filter-button')]")
+    private WebElement filterButton;
 
     private static final String CARD_NAME_PATTERN = "//app-event-card[.//mat-card-title[text()='%s']]";
     private static final String SEE_MORE_BUTTON_PATTERN = "//app-event-card[.//mat-card-title[text()='%s']]//button";
 
+    private static final By eventCards = By.xpath("//app-event-card");
 
     public Optional<WebElement> findCard(String eventName) {
         String xpath = String.format(CARD_NAME_PATTERN, eventName);
@@ -31,11 +39,30 @@ public class EventOverviewPage extends HomePage {
         }
     }
 
+    public List<WebElement> getAllEventCards() {
+        try {
+            waitUntil(ExpectedConditions.elementToBeClickable(eventCards));
+            return findElements(eventCards);
+        } catch (TimeoutException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    public List<String> getAllEventTitles() {
+        return getAllEventCards().stream().map(card -> card.findElement(By.tagName("mat-card-title")).getText()).toList();
+    }
+
     public void search(String eventName) {
         waitUntil(ExpectedConditions.visibilityOf(searchBox));
         searchBox.clear();
         searchBox.sendKeys(eventName);
         searchBox.sendKeys(Keys.ENTER);
+    }
+
+    public void filter(EventFilter filter) {
+        filterButton.click();
+        EventFilterDialogPage filterDialog = new EventFilterDialogPage();
+        filterDialog.filter(filter);
     }
 
     public EventDetailsPage clickSeeMoreButton(String eventName) {

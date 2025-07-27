@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public abstract class PageBase {
 
@@ -69,14 +70,26 @@ public abstract class PageBase {
         });
     }
 
-    protected void selectOption(WebElement matSelect, String option, String optionPattern) {
-        waitUntil(ExpectedConditions.invisibilityOfElementLocated(By.className("cdk-overlay-backdrop")));
+    protected void waitFor(long time, TimeUnit unit) {
+        driver.manage().timeouts().implicitlyWait(time, unit);
+    }
 
+    protected void selectOption(By matSelect, String option, String optionPattern) {
+        WebElement select = waitUntil(ExpectedConditions.elementToBeClickable(matSelect));
+        selectOption(select, option, optionPattern);
+    }
+
+    protected void selectOption(WebElement matSelect, String option, String optionPattern) {
         WebElement trigger = matSelect.findElement(By.className("mat-mdc-select-trigger"));
         waitUntil(ExpectedConditions.elementToBeClickable(trigger)).click();
 
         String optionXpath = String.format(optionPattern, option);
-        WebElement optionElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(optionXpath)));
+
+        waitUntil(ExpectedConditions.presenceOfElementLocated(By.className("cdk-overlay-pane")));
+
+        WebElement optionElement = waitUntil(ExpectedConditions
+                .visibilityOfElementLocated(By.xpath(optionXpath)));
+
         waitUntil(ExpectedConditions.elementToBeClickable(optionElement)).click();
     }
 
@@ -100,5 +113,4 @@ public abstract class PageBase {
             return "";
         }
     }
-
 }
