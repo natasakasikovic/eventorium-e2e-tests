@@ -1,13 +1,15 @@
 package com.ts.eventorium.event;
 
 import com.ts.eventorium.auth.OrganizerPage;
-import com.ts.eventorium.solution.ProductDetailsPage;
+import com.ts.eventorium.event.util.BudgetAction;
+import com.ts.eventorium.solution.ReservationDialog;
+import com.ts.eventorium.solution.SolutionDetailsPage;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,15 +49,21 @@ public class BudgetPlanningPage extends OrganizerPage {
     private final By deleteButton = By.xpath("//mat-icon[text()='delete']/..");
     private final By searchButton = By.xpath("//button[span[text()='Search']]");
     private final By suggestions = By.xpath("//div[@class='cards']/app-budget-suggestion-card");
+    private final By totalSpent = By.xpath("//tfoot/tr/td[3]");
+    private final By totalPlanned = By.xpath("//tfoot/tr/td[4]");
 
     private final By table = By.xpath("//table");
 
     private static final String SEE_MORE_PATTERN = "//app-budget-suggestion-card[.//mat-card-title[text()='%s']]//button[.//span[text()='See more']]";
-    private static final String ITEM_STATUS = "//tr[td[contains(., '%s')]]//mat-chip//span[contains(@class, 'mdc-evolution-chip__text-label')]";
     private static final String CARD_NAME_PATTERN = "//mat-card-title[text()='%s']";
+
+    private static final String TABLE_STATUS_PATTERN = "//tr[td[contains(., '%s')]]//mat-chip//span[contains(@class, 'mdc-evolution-chip__text-label')]";
     private static final String TABLE_NAME_PATTERN = "(//tbody/tr/td[1])[text()='%s']";
-    private static final String TABLE_CATEGORY_PATTERN = "(//tbody/tr/td[2])[text()='%s']";
-    private static final String TABLE_SPENT_AMOUNT = "(//tbody/tr/td[3])[text()='%s']";
+    private static final String TABLE_CATEGORY_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[2]";
+    private static final String TABLE_SPENT_AMOUNT_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[3]";
+    private static final String TABLE_PLANNED_AMOUNT_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[4]";
+    private static final String TABLE_PLANNED_AMOUNT_INPUT_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[4]/input";
+    private static final String TABLE_ACTION_PATTERN = "//tbody/tr[td[1][text()='%s']]/td[6]//button[.//mat-icon[text()='%s']]";
 
     public CreateAgendaPage clickAgendaCreationButton() {
         waitUntil(ExpectedConditions.visibilityOf(agendaCreationButton));
@@ -64,14 +72,15 @@ public class BudgetPlanningPage extends OrganizerPage {
     }
 
     public void selectCategory(String name) {
+        waitUntil(ExpectedConditions.visibilityOf(budgetItems));
         findTabCategory(name).ifPresent(element -> {
             element.click();
-            (new WebDriverWait(driver, 5))
-                    .until(elementToBeClickable(By.id(name + "-plannedInput")));
+            waitUntil(elementToBeClickable(By.id(name + "-plannedInput")));
         });
     }
 
     public void removeCategory(String name) {
+        waitUntil(ExpectedConditions.visibilityOf(budgetItems));
         findTabCategory(name).ifPresent(element -> {
             element.click();
             waitUntil(elementToBeClickable(deleteButton)).click();
@@ -91,7 +100,14 @@ public class BudgetPlanningPage extends OrganizerPage {
         }
     }
 
+    public void clickActionButton(String itemName, BudgetAction action) {
+        String xpath = String.format(TABLE_ACTION_PATTERN, itemName, action.toString());
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath))).click();
+    }
+
     public List<WebElement> search(String categoryName, double plannedAmount) {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(searchButton));
+
         addCategory(categoryName);
         selectCategory(categoryName);
 
@@ -103,6 +119,7 @@ public class BudgetPlanningPage extends OrganizerPage {
 
     public void clickPlannerTab() {
         waitUntil(elementToBeClickable(plannerTab)).click();
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(searchButton));
     }
 
     public void clickPurchasedAndReservedTab() {
@@ -114,18 +131,16 @@ public class BudgetPlanningPage extends OrganizerPage {
         click(searchButton);
     }
 
-    // TODO: Also allow ServiceDetailsPage
-    public ProductDetailsPage clickSeeMoreButton(String solutionName) {
+    public SolutionDetailsPage clickSeeMoreButton(String solutionName) {
         waitUntil(elementToBeClickable(By.xpath(String.format(SEE_MORE_PATTERN, solutionName)))).click();
-        return PageFactory.initElements(driver, ProductDetailsPage.class);
+        return PageFactory.initElements(driver, SolutionDetailsPage.class);
     }
 
     public void setPlannedAmount(String categoryName, String plannedAmount)  {
-        WebDriverWait wait = new WebDriverWait(driver, 5);
         By plannedAmountInput = By.id(categoryName + "-plannedInput");
-        WebElement inputElement = wait.until(ExpectedConditions.visibilityOfElementLocated(plannedAmountInput));
+        WebElement inputElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(plannedAmountInput));
 
-        wait.until(elementToBeClickable(inputElement));
+        waitUntil(elementToBeClickable(inputElement));
         set(plannedAmountInput, plannedAmount);
     }
 
@@ -142,13 +157,57 @@ public class BudgetPlanningPage extends OrganizerPage {
         return findElement(By.xpath(String.format(TABLE_NAME_PATTERN, name)));
     }
 
-    public String getItemStatus(String itemName) {
-        waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
-        Optional<WebElement> statusElementOpt = findElement(By.xpath(String.format(ITEM_STATUS, itemName)));
+    public boolean checkItemStatus(String itemName, String expectedStatus) {
+        return waitForStatus(itemName, TABLE_STATUS_PATTERN, expectedStatus);
+    }
 
-        return statusElementOpt
-                .map(WebElement::getText)
-                .orElse("Status not found");
+    public String getCategory(String itemName) {
+        return getCellValue(itemName, TABLE_CATEGORY_PATTERN);
+    }
+
+    public String getTotalSpent() {
+        WebElement element =  waitUntil(ExpectedConditions.visibilityOfElementLocated(totalSpent));
+        return element.getText().trim();
+    }
+
+    public String getTotalPlanned() {
+        WebElement element =  waitUntil(ExpectedConditions.visibilityOfElementLocated(totalPlanned));
+        return element.getText().trim();
+    }
+
+
+    public String getSpentAmount(String itemName) {
+        return getCellValue(itemName, TABLE_SPENT_AMOUNT_PATTERN);
+    }
+
+    public String getPlannedAmount(String itemName) {
+        return getCellValue(itemName, TABLE_PLANNED_AMOUNT_PATTERN);
+    }
+
+    public String getPlannedAmountInput(String itemName) {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
+        String xpath = String.format(TABLE_PLANNED_AMOUNT_INPUT_PATTERN, itemName);
+        return getInputValue(By.xpath(xpath));
+    }
+
+    public void updatePlannedAmount(String itemName, double newPrice) {
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(table));
+        String xpath = String.format(TABLE_PLANNED_AMOUNT_INPUT_PATTERN, itemName);
+        set(By.xpath(xpath), String.valueOf(newPrice));
+    }
+
+    public void makeReservation(String fromTime, String toTime) {
+        ReservationDialog reservationDialog = new ReservationDialog();
+        reservationDialog.reserveService(fromTime, toTime);
+    }
+
+    public Optional<WebElement> findByCardName(String name) {
+        return findElement(By.xpath(String.format(CARD_NAME_PATTERN, name)));
+    }
+
+    private String getCellValue(String itemName, String pattern) {
+        String xpath = String.format(pattern, itemName);
+        return waitForNonEmptyText(By.xpath(xpath));
     }
 
     private Optional<WebElement> findNewCategory(String name) {
@@ -157,12 +216,21 @@ public class BudgetPlanningPage extends OrganizerPage {
                 .findFirst();
     }
 
-    public Optional<WebElement> findByCardName(String name) {
-        return findElement(By.xpath(String.format(CARD_NAME_PATTERN, name)));
-    }
-
     private List<WebElement> findSuggestions() {
         waitUntil(ExpectedConditions.visibilityOfElementLocated(suggestions));
         return findElements(suggestions);
+    }
+
+    public boolean waitForStatus(String itemName, String pattern, String expectedStatus) {
+        String xpath = String.format(pattern, itemName);
+        try {
+            return waitUntil(driver -> {
+                WebElement element = driver.findElement(By.xpath(xpath));
+                String text = element.getText().trim();
+                return expectedStatus.equals(text);
+            });
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
 }

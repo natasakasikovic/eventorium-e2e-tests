@@ -30,9 +30,6 @@ public class CreateAgendaPage extends OrganizerPage {
     @FindBy(css = ".add-button button")
     private WebElement addActivityButton;
 
-    @FindBy(css = "table[mat-table]")
-    private WebElement agendaTable;
-
     @FindBy(css = ".finish-button")
     private WebElement finishButton;
 
@@ -86,7 +83,8 @@ public class CreateAgendaPage extends OrganizerPage {
     public void removeActivityByName(String activityName) {
         String xpath = "//table[@mat-table]//tr[.//td[contains(text(), '" + activityName + "')]]//button[@mat-icon-button]";
 
-        WebElement button = driver.findElement(By.xpath(xpath));
+        WebElement button = waitUntil(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
         button.click();
+        waitUntil(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//table[@mat-table]//tr[.//td[contains(text(), '" + activityName + "')]]")));
     }
 }

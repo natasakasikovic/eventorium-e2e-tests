@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class PageBase {
 
     protected static WebDriver driver;
+    private static final int TIMEOUT = 7;
 
     public static void setDriver(WebDriver driver) {
         PageBase.driver = driver;
@@ -48,6 +49,12 @@ public abstract class PageBase {
 
     protected void click(By locator) {
         findElement(locator).ifPresent(WebElement::click);
+    }
+
+    protected String getInputValue(By locator) {
+        WebElement input = waitUntil(ExpectedConditions.visibilityOfElementLocated(locator));
+        String value = input.getAttribute("value");
+        return value != null ? value.trim() : "";
     }
 
     protected void clickJs(By locator) {
@@ -87,7 +94,7 @@ public abstract class PageBase {
     }
 
     protected <T> T waitUntil(ExpectedCondition<T> condition) {
-        return waitUntil(condition, 5);
+        return waitUntil(condition, TIMEOUT);
     }
 
     protected <T> T waitUntil(ExpectedCondition<T> condition, int seconds) {
@@ -95,4 +102,15 @@ public abstract class PageBase {
         return wait.until(condition);
     }
 
+    public String waitForNonEmptyText(By locator) {
+        try {
+            return waitUntil(d -> {
+                WebElement element = driver.findElement(locator);
+                String text = element.getText().trim();
+                return (!text.isEmpty()) ? text : null;
+            });
+        } catch (TimeoutException e) {
+            return "";
+        }
+    }
 }

@@ -2,10 +2,10 @@ package com.ts.eventorium.home;
 
 import com.ts.eventorium.auth.LoginPage;
 import com.ts.eventorium.event.EventOverviewPage;
-import com.ts.eventorium.solution.ProductOverviewPage;
 import com.ts.eventorium.util.PageBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -28,7 +28,6 @@ public class HomePage extends PageBase {
 
     private final By drawer = By.xpath("//mat-sidenav-container/div[contains(@class, 'mat-drawer-shown')]");
     private final By logoutButton = By.xpath("//button/span[text()='LogOut']/..");
-    private final By toaster = By.cssSelector(".toast-top-right");
 
     private static final String DRAWER_OPTION_PATTERN = "//mat-nav-list/mat-list-item[.//span[text()='%s']]";
     private static final String SEE_MORE_CONTENT_PATTERN = "//h1[contains(text(), '%s')]/ancestor::div[@class='cards-screen']//div[@class='see-more']/button";
@@ -42,15 +41,6 @@ public class HomePage extends PageBase {
     public HomePage clickLogout() {
         findElement(logoutButton).ifPresent(WebElement::click);
         return PageFactory.initElements(driver, HomePage.class);
-    }
-
-    public ProductOverviewPage clickSeeMoreProducts() {
-        clickSeeMoreContentButton("product");
-        return PageFactory.initElements(driver, ProductOverviewPage.class);
-    }
-
-    public void clickSeeMoreServices() {
-        clickSeeMoreContentButton("service");
     }
 
     public EventOverviewPage clickSeeMoreEvents() {
@@ -70,10 +60,6 @@ public class HomePage extends PageBase {
         return waitUntil(visibilityOfElementLocated(By.xpath(xpath)));
     }
 
-    public Optional<WebElement> findToaster() {
-        return findElement(toaster);
-    }
-
     protected <T extends HomePage> T clickHome(Class<T> pageClass) {
         findDrawerOption("Home").ifPresent(WebElement::click);
         return PageFactory.initElements(driver, pageClass);
@@ -88,12 +74,23 @@ public class HomePage extends PageBase {
 
     public Optional<WebElement> findDialog(String expectedMessage) {
         String path = "//mat-dialog-content[contains(@class, 'custom-dialog-content')]";
-        WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)));
-        return messageElement.getText().contains(expectedMessage) ? Optional.of(messageElement) : Optional.empty();
+
+        try {
+            WebElement messageElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)));
+            boolean textMatches = waitUntil(driver -> {
+                String message = messageElement.getText();
+                return message.contains(expectedMessage);
+            });
+            if (textMatches) return Optional.of(messageElement);
+             else return Optional.empty();
+
+        } catch (TimeoutException e) {
+            return Optional.empty();
+        }
     }
 
     public void closeDialog() {
-        WebElement overlay = driver.findElement(By.cssSelector(".cdk-overlay-backdrop"));
+        WebElement overlay = waitUntil(ExpectedConditions.elementToBeClickable(By.cssSelector(".cdk-overlay-backdrop")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", overlay);
     }
 

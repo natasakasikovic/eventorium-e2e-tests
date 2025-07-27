@@ -1,7 +1,8 @@
 package com.ts.eventorium.event;
 
 import com.ts.eventorium.auth.OrganizerPage;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
