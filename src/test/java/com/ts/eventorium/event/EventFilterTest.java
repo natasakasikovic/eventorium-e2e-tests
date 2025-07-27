@@ -59,6 +59,14 @@ public class EventFilterTest extends TestBase {
         assertEquals(1, eventOverviewPage.getAllEventCards().size());
     }
 
+    @Test(groups = "event")
+    public void testFilterWithNoMatchingCriteriaReturnsNoEvents() {
+        EventFilter filter = new EventFilter("Non existent event", "festival", "Corporate Event", "Trebinje", 5, LocalDate.now().plusDays(300), LocalDate.now().plusDays(310));
+        eventOverviewPage.filter(filter);
+
+        assertTrue(eventOverviewPage.getAllEventCards().isEmpty());
+    }
+
     @Test(dataProviderClass = EventProvider.class, dataProvider = "provideEventFilters", groups = "event")
     public void testFilterReturnsExpectedEvents(EventFilter filter, List<String> expectedTitles) {
         eventOverviewPage.filter(filter);
