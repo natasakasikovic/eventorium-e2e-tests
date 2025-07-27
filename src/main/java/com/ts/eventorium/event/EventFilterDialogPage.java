@@ -7,6 +7,9 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 public class EventFilterDialogPage extends PageBase {
 
     private final By nameInput = By.xpath("//input[@formcontrolname='name']");
@@ -41,13 +44,17 @@ public class EventFilterDialogPage extends PageBase {
     }
 
     private void setFields(EventFilter filter) {
-        setField(nameInput, filter.name());
-        selectOption(eventTypeSelect, filter.type(), OPTION_PATTERN);
-        setField(descriptionInput, filter.description());
-        selectOption(citySelect, filter.city(),OPTION_PATTERN);
-        setField(maxParticipantsInput, filter.maxParticipants().toString());
-        setDate(fromDateSelect, filter.from().toString());
-        setDate(toDateSelect, filter.to().toString());
+        setIfNotNull(filter.name(), value -> setField(nameInput, value));
+        setIfNotNull(filter.type(), value -> selectOption(eventTypeSelect, value, OPTION_PATTERN));
+        setIfNotNull(filter.description(), value -> setField(descriptionInput, value));
+        setIfNotNull(filter.city(), value -> selectOption(citySelect, value, OPTION_PATTERN));
+        setIfNotNull(filter.maxParticipants(), value -> setField(maxParticipantsInput, value.toString()));
+        setIfNotNull(filter.from(), value -> setDate(fromDateSelect, value.toString()));
+        setIfNotNull(filter.to(), value -> setDate(toDateSelect, value.toString()));
+    }
+
+    private <T> void setIfNotNull(T value, Consumer<T> setter) {
+        Optional.ofNullable(value).ifPresent(setter);
     }
 
     public void setDate(By field, String date) {
