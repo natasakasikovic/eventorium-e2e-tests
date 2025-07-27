@@ -41,7 +41,7 @@ public class EventOverviewPage extends HomePage {
 
     public List<WebElement> getAllEventCards() {
         try {
-            waitUntil(ExpectedConditions.visibilityOfElementLocated(eventCards));
+            waitUntil(ExpectedConditions.elementToBeClickable(eventCards));
             return findElements(eventCards);
         } catch (TimeoutException e) {
             return Collections.emptyList();
