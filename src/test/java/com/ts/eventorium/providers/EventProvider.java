@@ -14,7 +14,8 @@ public class EventProvider {
                 { new EventFilter(null, "birthday", null, null, null, null, null), List.of("Birthday Bash in Sombor", "Birthday Celebration in Beograd", "Kraljevo Birthday Party", "Birthday Extravaganza in Novi Sad")},
                 { new EventFilter(null, null, null, "Trebinje", null, null, null), List.of("Trebinje Wedding Ceremony")},
                 { new EventFilter(null, null, null, null, 50, null, null), List.of("Corporate Event in Novi Sad", "Kraljevo Birthday Party")},
-                { new EventFilter(null, null, null, null, null, LocalDate.now().plusDays(99), LocalDate.now().plusDays(100)), List.of("Sombor Conference", "Wedding Expo in Novi Sad", "Kraljevo Birthday Party", "Birthday Extravaganza in Novi Sad")}
+                { new EventFilter(null, null, null, null, null, LocalDate.now().plusDays(99), LocalDate.now().plusDays(100)), List.of("Sombor Conference", "Wedding Expo in Novi Sad", "Kraljevo Birthday Party", "Birthday Extravaganza in Novi Sad")},
+                { new EventFilter(null, "birthday", "Birthday Party",  null, null, LocalDate.now().plusDays(3), LocalDate.now().plusDays(100)), List.of("Kraljevo Birthday Party", "Birthday Bash in Sombor", "Birthday Celebration in Beograd", "Birthday Extravaganza in Novi Sad")}
         };
     }
 }

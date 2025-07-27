@@ -51,19 +51,6 @@ public class EventFilterTest extends TestBase {
     }
 
     @Test(groups = "event")
-    public void testFilterWithValidCriteriaReturnsMultipleEvents() {
-        EventFilter filter = new EventFilter(null, "birthday", "Birthday Party",  null, null, LocalDate.now().plusDays(3), LocalDate.now().plusDays(100));
-        eventOverviewPage.filter(filter);
-
-        assertTrue(eventOverviewPage.findCard("Kraljevo Birthday Party").isPresent());
-        assertTrue(eventOverviewPage.findCard("Birthday Bash in Sombor").isPresent());
-        assertTrue(eventOverviewPage.findCard("Birthday Celebration in Beograd").isPresent());
-        assertTrue(eventOverviewPage.findCard("Birthday Extravaganza in Novi Sad").isPresent());
-
-        assertEquals(4, eventOverviewPage.getAllEventCards().size());
-    }
-
-    @Test(groups = "event")
     public void testFilterWithValidCriteriaReturnsSingleExpectedEvent() {
         EventFilter filter = new EventFilter("Sombor", "conference", "Corporate Event", "Sombor", 100, LocalDate.now().plusDays(90), LocalDate.now().plusDays(110));
         eventOverviewPage.filter(filter);
@@ -79,7 +66,6 @@ public class EventFilterTest extends TestBase {
         for (String expected : expectedTitles)
             assertTrue(eventOverviewPage.findCard(expected).isPresent());
 
-        System.out.println(eventOverviewPage.getAllEventCards());
         assertEquals(expectedTitles.size(), eventOverviewPage.getAllEventCards().size());
     }
 }
