@@ -44,10 +44,10 @@ public class EventFilterTest extends TestBase {
 
     @Test(groups = "event")
     public void filterEvents() {
-        EventFilter filter = new EventFilter("Sombor", "conference", "CORPORATE", "Sombor", 100, LocalDate.now().plusDays(90), LocalDate.now().plusDays(110));
+        EventFilter filter = new EventFilter("Sombor", "conference", "Corporate Event", "Sombor", 100, LocalDate.now().plusDays(90), LocalDate.now().plusDays(110));
         eventOverviewPage.filter(filter);
 
-        assertTrue(eventOverviewPage.findCard("Sombor").isPresent());
+        assertTrue(eventOverviewPage.findCard("Sombor Conference").isPresent());
 
         List<WebElement> events = eventOverviewPage.getAllEventCards();
         Assert.assertEquals(1, events.size());

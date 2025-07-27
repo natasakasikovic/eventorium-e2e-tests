@@ -40,28 +40,14 @@ public class EventFilterDialogPage extends PageBase {
         element.sendKeys(value);
     }
 
-    // TODO: fix selectOption method
     private void setFields(EventFilter filter) {
         setField(nameInput, filter.name());
-//        selectOption(eventTypeSelect, filter.getType(), OPTION_PATTERN);
+        selectOption(eventTypeSelect, filter.type(), OPTION_PATTERN);
         setField(descriptionInput, filter.description());
-//        selectOption(citySelect, filter.getCity(), OPTION_PATTERN);
+        selectOption(citySelect, filter.city(),OPTION_PATTERN);
         setField(maxParticipantsInput, filter.maxParticipants().toString());
         setDate(fromDateSelect, filter.from().toString());
         setDate(toDateSelect, filter.to().toString());
-    }
-
-    protected void selectOption(By select, String option, String optionPattern) {
-        WebElement element = waitUntil(ExpectedConditions.visibilityOfElementLocated(select));
-
-        WebElement trigger = element.findElement(By.cssSelector("[class*='mat-select-trigger']"));
-        waitUntil(ExpectedConditions.elementToBeClickable(trigger)).click();
-
-        waitUntil(ExpectedConditions.visibilityOfElementLocated(By.className("cdk-overlay-pane")));
-
-        String optionXpath = String.format(optionPattern, option);
-        WebElement optionElement = waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath(optionXpath)));
-        waitUntil(ExpectedConditions.elementToBeClickable(optionElement)).click();
     }
 
     public void setDate(By field, String date) {
