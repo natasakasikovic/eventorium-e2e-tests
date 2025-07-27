@@ -1,8 +1,6 @@
 <a id="readme-top"></a>
 
-[![Contributors][contributors-shield]][contributors-url]  
-[![Unlicense License][license-shield]][license-url]  
-[![Last Commit][last-commit-shield]][last-commit-url]
+[![Contributors][contributors-shield]][contributors-url]  [![Unlicense License][license-shield]][license-url]  [![Last Commit][last-commit-shield]][last-commit-url]
 
 <div align="center">
 
@@ -94,8 +92,14 @@ The following key end-to-end scenarios are covered:
 - ✅ Reserve services with time slots (directly from planner or details page)
 - ✅ Add purchases directly from product details
 
-### 🔍 Coming Soon
-- ⏳ Event search by name and filter by type or location
+### 🔍 Event Search & Filtering
+
+- ✅ Search by event name returns matching results
+- ✅ Search by name with no matches returns no events
+- ✅ Search with empty query returns all visible events
+- ✅ Filter by combination of filter parameters returns correct results
+- ✅ Filter with no matching criteria returns no events
+- ✅ Combined search and filter returns correct and consistent results
 
 
 ## 🔗 Related Repositories
