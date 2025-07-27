@@ -2,7 +2,7 @@
 
 [![Contributors][contributors-shield]][contributors-url]  
 [![Unlicense License][license-shield]][license-url]  
-[![Last Commit](https://img.shields.io/github/last-commit/kzi-nastava/iss-project-event-planner-siit-2024-team-13?branch=main&style=for-the-badge)](https://github.com/kzi-nastava/iss-project-event-planner-siit-2024-team-13/commits/main)
+[![Last Commit][last-commit-shield]][last-commit-url]
 
 <div align="center">
 
@@ -11,7 +11,7 @@
   <p align="center">
     End-to-end tests for the Eventorium event planning platform.
     <br />
-    <a href="https://github.com/kzi-nastava/iss-project-event-planner-siit-2024-team-13/issues/new?labels=bug">Report Bug</a>
+    <a href="https://github.com/lazarnagulov/ts-project-event-planner-siit-2024-team-13/issues/new?labels=bug">Report Bug</a>
   </p>
 </div>
 
@@ -117,7 +117,9 @@ These tests interact with the following components of the Eventorium platform. E
 [Selenium-url]: https://www.selenium.dev/
 [ChromeDriver-img]: https://img.shields.io/badge/ChromeDriver-automated--browser--testing-yellow?logo=googlechrome&logoColor=white
 [ChromeDriver-url]: https://chromedriver.chromium.org/
-[contributors-shield]: https://img.shields.io/github/contributors/kzi-nastava/iss-project-event-planner-siit-2024-team-13.svg?style=for-the-badge
-[contributors-url]: https://github.com/kzi-nastava/iss-project-event-planner-siit-2024-team-13/graphs/contributors
-[license-shield]: https://img.shields.io/github/license/kzi-nastava/iss-project-event-planner-siit-2024-team-13.svg?style=for-the-badge
-[license-url]: https://github.com/kzi-nastava/iss-project-event-planner-siit-2024-team-13/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/lazarnagulov/ts-project-event-planner-siit-2024-team-13.svg?style=for-the-badge
+[contributors-url]: https://github.com/lazarnagulov/ts-project-event-planner-siit-2024-team-13/graphs/contributors
+[license-shield]: https://img.shields.io/github/license/lazarnagulov/ts-project-event-planner-siit-2024-team-13.svg?style=for-the-badge
+[license-url]: https://github.com/lazarnagulov/ts-project-event-planner-siit-2024-team-13/blob/master/LICENSE.txt
+[last-commit-shield]: https://img.shields.io/github/last-commit/lazarnagulov/ts-project-event-planner-siit-2024-team-13?branch=main&style=for-the-badge
+[last-commit-url]: https://github.com/lazarnagulov/ts-project-event-planner-siit-2024-team-13/commits/main
