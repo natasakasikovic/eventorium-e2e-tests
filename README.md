@@ -9,7 +9,7 @@
   <p align="center">
     End-to-end tests for the Eventorium event planning platform.
     <br />
-    <a href="https://github.com/lazarnagulov/ts-project-event-planner-siit-2024-team-13/issues/new?labels=bug">Report Bug</a>
+    <a href="https://github.com/lazarnagulov/eventorium-e2e-tests/issues/new?labels=bug">Report Bug</a>
   </p>
 </div>
 
@@ -105,9 +105,9 @@ The following key end-to-end scenarios are covered:
 ## 🔗 Related Repositories
 These tests interact with the following components of the Eventorium platform. Ensure both are up and running before testing:
 
-🌐 Backend: [Eventorium Backend](https://github.com/kzi-nastava/iss-project-event-planner-siit-2024-team-13)
+🌐 Backend: [Eventorium Backend](https://github.com/natasakasikovic/eventorium-backend)
 
-💻 Frontend: [Eventorium Frontend](https://github.com/kzi-nastava/iks-project-event-planner-siit-2024-team-13)
+💻 Frontend: [Eventorium Frontend](https://github.com/natasakasikovic/eventorium-frontend)
 
 <br/>
 
@@ -121,9 +121,9 @@ These tests interact with the following components of the Eventorium platform. E
 [Selenium-url]: https://www.selenium.dev/
 [ChromeDriver-img]: https://img.shields.io/badge/ChromeDriver-automated--browser--testing-yellow?logo=googlechrome&logoColor=white
 [ChromeDriver-url]: https://chromedriver.chromium.org/
-[contributors-shield]: https://img.shields.io/github/contributors/lazarnagulov/ts-project-event-planner-siit-2024-team-13.svg?style=for-the-badge
-[contributors-url]: https://github.com/lazarnagulov/ts-project-event-planner-siit-2024-team-13/graphs/contributors
-[license-shield]: https://img.shields.io/github/license/lazarnagulov/ts-project-event-planner-siit-2024-team-13.svg?style=for-the-badge
-[license-url]: https://github.com/lazarnagulov/ts-project-event-planner-siit-2024-team-13/blob/master/LICENSE.txt
-[last-commit-shield]: https://img.shields.io/github/last-commit/lazarnagulov/ts-project-event-planner-siit-2024-team-13?branch=main&style=for-the-badge
-[last-commit-url]: https://github.com/lazarnagulov/ts-project-event-planner-siit-2024-team-13/commits/main
+[contributors-shield]: https://img.shields.io/github/contributors/natasakasikovic/eventorium-e2e-tests?style=for-the-badge
+[contributors-url]: https://github.com/natasakasikovic/eventorium-e2e-tests/graphs/contributors
+[license-shield]: https://img.shields.io/github/license/natasakasikovic/eventorium-e2e-tests.svg?style=for-the-badge
+[license-url]: https://github.com/natasakasikovic/eventorium-e2e-tests/blob/master/LICENSE.txt
+[last-commit-shield]: https://img.shields.io/github/last-commit/natasakasikovic/eventorium-e2e-tests?branch=main&style=for-the-badge
+[last-commit-url]: https://github.com/natasakasikovic/eventorium-e2e-tests/commits/main
